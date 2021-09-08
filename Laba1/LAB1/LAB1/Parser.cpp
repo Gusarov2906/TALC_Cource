@@ -31,11 +31,16 @@ std::vector<Lexeme*> Parser::getLexemes(std::string str)
 		}
 		else
 		{
-			std::cout << "Nullptr lexeme!" << std::endl;;
+			lexemes.clear();
+			return lexemes;
 		}
 	}
 
-	checkLexemes(lexemes);
+	if (checkLexemes(lexemes) != "")
+	{
+		lexemes.clear();
+		return lexemes;
+	}
 
 	return lexemes;
 }
@@ -46,11 +51,11 @@ Lexeme* Parser::getLexeme(const std::string& str)
 	bool haveExponentSymbol = false;
 	bool haveExponentSignSymbol = false;
 	bool isNumber = false;
+
 	std::string resStr = "";
 	Lexeme* lexeme = nullptr;
 
-	if ((index == 0 || prevIndexOpenParenthesis) && ((long long)index + 1 < str.length()) &&
-		((isdigit(str[(long long)index+1]) || isPoint(str[(long long)index + 1]))))
+	if (isNegativeSign(str))
 	{
 		prevIndexOpenParenthesis = false;
 		if (str[index] == '-' || str[index] == '+')
@@ -60,38 +65,27 @@ Lexeme* Parser::getLexeme(const std::string& str)
 		}
 	}
 
-	while ((isdigit(str[index]) || isPoint(str[index]) || isExponentSymbol(str[index]) 
-		|| (str[index]) == '-' || (str[index]) == '+') && index < str.length())
+	while (isdigit(str[index]) 
+		|| (isPoint(str[index]) && !havePoint)
+		|| (isExponentSymbol(str[index]) && !haveExponentSymbol && resStr.length() > 0)
+		|| ((str[index]) == '-' && haveExponentSymbol && !haveExponentSignSymbol)
+		|| ((str[index]) == '+' && haveExponentSymbol && !haveExponentSignSymbol)
+		&& index < str.length())
 	{
 
-		if (isPoint(str[index]) && !havePoint)
+		if (isPoint(str[index]))
 		{
 			havePoint = true;
 		}
-		else if (isPoint(str[index]) && havePoint)
+
+		if (isExponentSymbol(str[index]))
 		{
-			std::cout << "Two point in one number!" << std::endl;;
-			return nullptr;
+			haveExponentSymbol = true;
 		}
 
-		if (isExponentSymbol(str[index]) && !haveExponentSymbol)
-		{
-			havePoint = true;
-		}
-		else if (isExponentSymbol(str[index]) && haveExponentSymbol)
-		{
-			std::cout << "Two exponent symbols in one number!" << std::endl;;
-			return nullptr;
-		}
-
-		if (((str[index]) == '-' || (str[index]) == '+') && !haveExponentSignSymbol)
+		if (((str[index]) == '-' || (str[index]) == '+') && !haveExponentSignSymbol && haveExponentSymbol)
 		{
 			haveExponentSignSymbol = true;
-		}
-		else if (((str[index]) == '-' || (str[index]) == '+') && haveExponentSignSymbol)
-		{
-			std::cout << "Two exponent sign symbols in one number!" << std::endl;;
-			return nullptr;
 		}
 
 		resStr += str[index];
@@ -100,27 +94,42 @@ Lexeme* Parser::getLexeme(const std::string& str)
 		index++;
 	}
 
+	if (isExponentSymbol(str[index]) && haveExponentSymbol)
+	{
+		std::cout << "Two exponent symbols in one number!" << std::endl;;
+		return nullptr;
+	}
+
+	if (isPoint(str[index]) && havePoint)
+	{
+		std::cout << "Two point in one number!" << std::endl;;
+		return nullptr;
+	}
+
+	if (isExponentSymbol(str[index]) && haveExponentSymbol)
+	{
+		std::cout << "Two exponent symbols in one number!" << std::endl;;
+		return nullptr;
+	}
+
+
 	if (isNumber)
 	{
 		index--;
 		if (haveExponentSymbol && haveExponentSignSymbol)
 		{
-			double num = std::stod(resStr.substr(0, resStr.rfind('E')));
-			if (resStr[resStr.rfind('E') + 1] == '+')
+			double* num = getNumberInExponentForm(resStr);
+			if (num != nullptr)
 			{
-				num *= std::stod(resStr.substr(resStr.rfind('E') + 2, resStr.back()));
+				lexeme = new Lexeme(*num);
+				delete num;
 			}
-			else if (resStr[resStr.rfind('E') + 1] == '-')
-			{
-				num /= std::stod(resStr.substr(resStr.rfind('E') + 2, resStr.back()));
-			}
-			else
-			{
-				std::cout << "Exponent error!" << std::endl;
-			}
-			lexeme = new Lexeme(num);
 		}
-		lexeme = new Lexeme(std::stod(resStr));
+		else
+		{
+			lexeme = new Lexeme(std::stod(resStr));
+		}
+		prevIndexOpenParenthesis = false;
 	}
 	else if (isArithmeticSign(str[index]) || isParenthesis(str[index]))
 	{
@@ -131,13 +140,9 @@ Lexeme* Parser::getLexeme(const std::string& str)
 		resStr = str[index];
 		lexeme = new Lexeme(resStr);
 	}
-	else if (isIndention(str[index]))
-	{
-		std::cout << "Indent symbol: " << str[index] << std::endl;;
-		lexeme = nullptr;
-	}
 	else
 	{
+		prevIndexOpenParenthesis = false;
 		std::cout << "Unknown symbol: " << str[index] << std::endl;;
 		lexeme = nullptr;
 	}
@@ -145,6 +150,54 @@ Lexeme* Parser::getLexeme(const std::string& str)
 	index++;
 
 	return lexeme;
+}
+
+double* Parser::getNumberInExponentForm(std::string& in)
+{
+	double* num = new double();
+	*num = std::stod(in.substr(0, in.rfind('E')));
+	if (in.rfind('E') + 2 < in.size())
+	{
+		if (in[in.rfind('E') + 1] == '+')
+		{
+			for (int i = 0; i < std::stod(in.substr(in.rfind('E') + 2, in.back())); i++)
+			{
+				*num *= 10;
+			}
+		}
+		else if (in[in.rfind('E') + 1] == '-')
+		{
+			for (int i = 0; i < std::stod(in.substr(in.rfind('E') + 2, in.back())); i++)
+			{
+				*num /= 10;
+			}
+		}
+		else
+		{
+			std::cout << "Exponent error!" << std::endl;
+			return nullptr;
+		}
+	}
+	else
+	{
+		std::cout << "Exponent error!" << std::endl;
+		return nullptr;
+	}
+	return num;
+}
+
+bool Parser::isNegativeSign(const std::string str)
+{
+	if ((index == 0 || prevIndexOpenParenthesis)
+		&& ((long long)index + 1 < str.length())
+		&& ((isdigit(str[(long long)index + 1]) || isPoint(str[(long long)index + 1]))))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool Parser::isArithmeticSign(const char symbol)
@@ -195,6 +248,73 @@ bool Parser::isIndention(const char symbol)
 	}
 }
 
+void Parser::deleteEmptyParethesis(std::vector<Lexeme*>& lexemes, int& size, int& i)
+{
+	lexemes.erase(lexemes.begin() + i);
+	lexemes.erase(lexemes.begin() + i);
+	size--;
+	size--;
+	i = -1;
+}
+
+bool Parser::checkNextCloseParenthesis(std::vector<Lexeme*> lexemes, int i)
+{
+	if (((long long)i + 1) < lexemes.size())
+	{
+		if (lexemes[(long long)i + 1]->getString() == ")")
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Parser::multiplyDetectNext(std::vector<Lexeme*> lexemes, int i)
+{
+	if (((long long)i + 1) < lexemes.size())
+	{
+		if (lexemes[(long long)i + 1]->getType() == LexemeType::decimal
+			|| lexemes[(long long)i - 1]->getString() == "(")
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Parser::multiplyDetectPrev(std::vector<Lexeme*> lexemes, int i)
+{
+	if (((long long)i - 1) >= 0)
+	{
+		if (lexemes[(long long)i - 1]->getType() == LexemeType::decimal
+			|| lexemes[(long long)i - 1]->getString() == ")")
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Parser::checkDoubleNumbers(std::vector<Lexeme*> lexemes, int i)
+{
+	if (lexemes[(long long)i - 1]->getType() == LexemeType::decimal
+		&& lexemes[i]->getType() == LexemeType::decimal)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Parser::checkDoubleOperations(std::vector<Lexeme*> lexemes, int i)
+{
+	if (lexemes[(long long)i - 1]->getType() == LexemeType::operation
+		&& lexemes[i]->getType() == LexemeType::operation)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool Parser::isExponentSymbol(const char symbol)
 {
 	if (symbol == 'E' || symbol == 'Å')
@@ -220,18 +340,48 @@ std::string Parser::replaceInString(std::string str, std::string tofind, std::st
 std::string Parser::checkLexemes(std::vector<Lexeme*>& lexemes)
 {
 	std::stack<int> openParenthesis;
-
 	std::string code = "";
 
-	for (int i = 0; i < lexemes.size(); i++)
+	int countNums = 0;
+	int countOperations = 0;
+	int size = lexemes.size();
+
+	for (int i = 0; i < size; i++)
 	{
+		if (lexemes[i]->getType() == LexemeType::decimal)
+		{
+			countNums++;
+		}
+
+		if (lexemes[i]->getType() == LexemeType::operation)
+		{
+			countOperations++;
+		}
+
 		if (lexemes[i]->getType() == LexemeType::parenthesis)
 		{
 			if (lexemes[i]->getString() == "(")
 			{
+				if (checkNextCloseParenthesis(lexemes, i))
+				{
+					deleteEmptyParethesis(lexemes, size, i);
+					while (!openParenthesis.empty())
+					{
+						openParenthesis.pop();
+					}
+					continue;
+				}
+
 				openParenthesis.push(1);
+
+				if (multiplyDetectPrev(lexemes, i))
+				{
+					lexemes.insert(lexemes.begin() + i, (new Lexeme("*")));
+					size++;
+					i++;
+				}
 			}
-			else
+			else if (lexemes[i]->getString() == ")")
 			{
 				if (openParenthesis.size() > 0)
 				{
@@ -242,19 +392,23 @@ std::string Parser::checkLexemes(std::vector<Lexeme*>& lexemes)
 					code += '1';
 					std::cout << "Parenthesis error!" << std::endl;;
 				}
+
+				if (multiplyDetectNext(lexemes, i))
+				{
+					lexemes.insert(lexemes.begin() + i + 1, (new Lexeme("*")));
+					size++;
+				}
 			}
 		}
 
 		if (i > 0)
 		{
-			if (lexemes[(long long)i - 1]->getType() == LexemeType::decimal
-				&& lexemes[i]->getType() == LexemeType::decimal)
+			if (checkDoubleNumbers(lexemes, i))
 			{
 				code += '3';
 				std::cout << "Double numbers error!" << std::endl;;
 			}
-			if (lexemes[(long long)i - 1]->getType() == LexemeType::operation
-				&& lexemes[i]->getType() == LexemeType::operation)
+			if (checkDoubleOperations(lexemes, i))
 			{
 				code += '4';
 				std::cout << "Double operation error!" << std::endl;;
@@ -269,5 +423,18 @@ std::string Parser::checkLexemes(std::vector<Lexeme*>& lexemes)
 		std::cout << "Parenthesis error!" << std::endl;;
 	}
 
+	if (countNums < 2 || countOperations < 1)
+	{
+		code += '5';
+		std::cout << "Need at least two numbers and one operator! " << std::endl;;
+	}
+
 	return code;
 }
+
+//std::cout << i << std::endl;
+//for (int j = 0; j < lexemes.size(); j++)
+//{
+//	std::cout << lexemes[j]->getString() << " ";
+//}
+//std::cout << std::endl;

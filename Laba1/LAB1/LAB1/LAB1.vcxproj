@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Lexeme.cpp" />
+    <ClCompile Include="LexemeString.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PolishReverseConverter.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lexeme.h" />
+    <ClInclude Include="LexemeString.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PolishReverseConverter.h" />
     <ClInclude Include="Solver.h" />

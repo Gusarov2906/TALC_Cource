@@ -1,20 +1,21 @@
 #pragma once
 #include "Lexeme.h"
 #include <vector>
+#include "LexemeString.h"
 
 class Parser
 {
 public:
 	Parser();
 	~Parser();
-	std::vector<Lexeme*> getLexemes(std::string str);
+	LexemeString getLexemes(std::string str);
 private:
 	int index;
 	bool prevIndexOpenParenthesis;
 	Lexeme* getLexeme(const std::string& str);
 	std::string replaceInString(std::string str, std::string tofind, std::string toreplace);
 
-	std::string checkLexemes(std::vector<Lexeme*>& lexemes);
+	std::string checkLexemes(LexemeString& lexemes);
 
 	double* getNumberInExponentForm(std::string& in);
 
@@ -25,11 +26,11 @@ private:
 	bool isExponentSymbol(const char symbol);
 	bool isIndention(const char symbol);
 
-	void deleteEmptyParethesis(std::vector<Lexeme*>& lexemes, int& size, int& i);
+	void deleteEmptyParethesis(LexemeString* lexemes, int& size, int& i);
 
-	bool checkNextCloseParenthesis(std::vector<Lexeme*> lexemes, int i);
-	bool multiplyDetectNext(std::vector<Lexeme*> lexemes, int i);
-	bool multiplyDetectPrev(std::vector<Lexeme*> lexemes, int i);
-	bool checkDoubleNumbers(std::vector<Lexeme*> lexemes, int i);
-	bool checkDoubleOperations(std::vector<Lexeme*> lexemes, int i);
+	bool checkNextCloseParenthesis(LexemeString& lexemes, int i);
+	bool multiplyDetectNext(LexemeString& lexemes, int i);
+	bool multiplyDetectPrev(LexemeString& lexemes, int i);
+	bool checkDoubleNumbers(LexemeString& lexemes, int i);
+	bool checkDoubleOperations(LexemeString& lexemes, int i);
 };

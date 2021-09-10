@@ -5,6 +5,7 @@ Lexeme::Lexeme(double number)
 	this->type = LexemeType::decimal;
 	this->num = number;
 	this->str = "";
+	this->priority = 0;
 }
 
 Lexeme::Lexeme(std::string str)
@@ -12,12 +13,25 @@ Lexeme::Lexeme(std::string str)
 	if (str == "(" || str == ")")
 	{
 		this->type = LexemeType::parenthesis;
+		this->priority = 1;
 	} else if (str == "+" || str == "-" || str == "*" || str == "/" || str == "^")
 	{
 		this->type = LexemeType::operation;
+		if (str == "+" || str == "-")
+		{
+			this->priority = 2;
+		} else if (str == "/" || str == "*")
+		{
+			this->priority = 3;
+		}
+		else
+		{
+			this->priority = 4;
+		}
 	} else 
 	{
 		this->type = LexemeType::function;
+		this->priority = 5;
 	}
 	this->num = 0;
 	this->str = str;
@@ -58,4 +72,9 @@ std::string Lexeme::getString()
 		return str;
 		break;
 	}
+}
+
+int Lexeme::getPriority()
+{
+	return this->priority;
 }

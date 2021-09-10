@@ -20,9 +20,11 @@ public:
 	T getValue();
 	LexemeType getType();
 	std::string getString();
+	int getPriority();
 
 private:
 	LexemeType type;
 	double num;
 	std::string str;
+	int priority;
 };

@@ -42,8 +42,7 @@ Lexeme::~Lexeme()
 
 }
 
-template <typename T>
-T Lexeme::getValue()
+double Lexeme::getValue()
 {
 	switch (this->type)
 	{
@@ -51,7 +50,7 @@ T Lexeme::getValue()
 		return num;
 		break;
 	default:
-		return str;
+		return 0;
 		break;
 	}
 }

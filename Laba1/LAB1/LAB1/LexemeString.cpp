@@ -15,10 +15,7 @@ LexemeString::LexemeString(std::vector<Lexeme> lexemes)
 
 LexemeString::~LexemeString()
 {
-    //for (int i = 0; i < lexemes.size(); i++)
-    //{
-    //    delete lexemes[i];
-    //}
+
 }
 
 void LexemeString::push_back(Lexeme lexeme)
@@ -56,4 +53,29 @@ Lexeme LexemeString::at(int i)
 void LexemeString::erase(int i)
 {
     this->lexemes.erase(this->lexemes.begin() + i);
+}
+
+std::string LexemeString::toString()
+{
+    std::string res;
+    for (int i = 0; i < this->lexemes.size(); i++)
+    {
+        if (this->lexemes[i].getType() == LexemeType::decimal)
+        {
+            std::string tmp = std::to_string(this->lexemes[i].getValue());
+            if (tmp[tmp.size() - 1] == '0')
+                for (size_t i = tmp.size() - 1; tmp[i] == '0'; i--)
+                    tmp.erase(i, 1);
+
+            if (tmp[tmp.size() - 1] == '.')
+                tmp.erase(tmp.size() - 1, 1);
+            res += tmp;
+        }
+        else
+        {
+            res += this->lexemes[i].getString();
+        }
+        res += " ";
+    }
+    return res;
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "Lexeme.h"
+#include "LexemeString.h"
 #include <vector>
 
 class Solver
@@ -7,5 +7,6 @@ class Solver
 public:
     Solver();
     ~Solver();
-    double solve(std::vector<Lexeme*> lexemes);
+    double solve(LexemeString lexemes);
+    void oneStep(LexemeString& lexemes);
 };

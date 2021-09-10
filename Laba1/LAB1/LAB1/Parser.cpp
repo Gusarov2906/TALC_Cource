@@ -34,6 +34,7 @@ LexemeString Parser::getLexemes(std::string str)
             lexemes.clear();
             return lexemes;
         }
+        delete tmp;
     }
 
     if (checkLexemes(lexemes) != "")

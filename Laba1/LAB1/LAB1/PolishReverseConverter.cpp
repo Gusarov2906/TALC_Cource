@@ -59,11 +59,5 @@ LexemeString PolishReverseConverter::convert(LexemeString lexemes)
         operations.pop();
 
     }
-    std::cout << "After convert:" << std::endl;
-    for (int i = 0; i < res.size(); i++)
-    {
-        std::cout << res.at(i).getString() << " ";
-    }
-    std::cout << std::endl;
     return res;
 }

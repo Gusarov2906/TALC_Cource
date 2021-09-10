@@ -1,6 +1,7 @@
 #pragma once
 #include "Lexeme.h"
 #include <vector>
+#include <string>
 
 class LexemeString
 {
@@ -15,7 +16,7 @@ public:
     int size();
     Lexeme at(int i);
     void erase(int i);
-
+    std::string toString();
 protected:
     std::vector<Lexeme> lexemes;
 

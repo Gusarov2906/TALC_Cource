@@ -16,8 +16,7 @@ public:
 	Lexeme(std::string str);
 	~Lexeme();
 
-	template <typename T>
-	T getValue();
+	double getValue();
 	LexemeType getType();
 	std::string getString();
 	int getPriority();

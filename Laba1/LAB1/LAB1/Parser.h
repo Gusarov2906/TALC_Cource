@@ -25,12 +25,19 @@ private:
 	bool isPoint(const char symbol);
 	bool isExponentSymbol(const char symbol);
 	bool isIndention(const char symbol);
-
+	bool isLogFunctionStart(std::string str);
+	bool isComma(const char symbol);
 	void deleteEmptyParethesis(LexemeString* lexemes, int& size, int& i);
 
 	bool checkNextCloseParenthesis(LexemeString& lexemes, int i);
+	bool checkNextOpenParenthesis(LexemeString& lexemes, int i);
+	bool checkPrevCloseParenthesis(LexemeString& lexemes, int i);
+	bool checkPrevOpenParenthesis(LexemeString& lexemes, int i);
 	bool multiplyDetectNext(LexemeString& lexemes, int i);
 	bool multiplyDetectPrev(LexemeString& lexemes, int i);
 	bool checkDoubleNumbers(LexemeString& lexemes, int i);
 	bool checkDoubleOperations(LexemeString& lexemes, int i);
+	bool checkNextDecimal(LexemeString& lexemes, int i);
+	bool checkNextStartFunction(LexemeString& lexemes, int i);
+	int getLenghtFunction(LexemeString* lexemes, int i);
 };

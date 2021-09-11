@@ -73,7 +73,7 @@ std::string LexemeString::toString()
         }
         else
         {
-            res += this->lexemes[i].getString();
+            res += this->lexemes[i].getFormatedString();
         }
         res += " ";
     }

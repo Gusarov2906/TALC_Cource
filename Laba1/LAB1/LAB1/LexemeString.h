@@ -17,6 +17,7 @@ public:
     Lexeme at(int i);
     void erase(int i);
     std::string toString();
+
 protected:
     std::vector<Lexeme> lexemes;
 

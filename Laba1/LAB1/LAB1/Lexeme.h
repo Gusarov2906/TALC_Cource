@@ -19,6 +19,7 @@ public:
 	double getValue();
 	LexemeType getType();
 	std::string getString();
+	std::string getFormatedString();
 	int getPriority();
 
 private:

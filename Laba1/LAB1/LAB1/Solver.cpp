@@ -1,5 +1,6 @@
 #include "Solver.h"
 #define DOUBLE_CONST 0.0
+#include <iostream>
 
 Solver::Solver()
 {
@@ -11,77 +12,74 @@ Solver::~Solver()
 
 double Solver::solve(LexemeString lexemes)
 {
-    
-    while (lexemes.size() > 1)
-    {
-        oneStep(lexemes);
-    }
-    return lexemes.at(0).getValue();
-}
+    bool specificOperation = true;
+    double a;
+    double b;
+    Lexeme* lexeme = nullptr;
 
-void Solver::oneStep(LexemeString& lexemes)
-{
     for (int i = 0; i < lexemes.size(); i++)
     {
-        if (lexemes.at(i).getType() == LexemeType::operation)
+        if (lexemes.at(i).getType() == LexemeType::operation
+            || lexemes.at(i).getType() == LexemeType::function)
         {
-            double a = lexemes.at(i - 2).getValue();
-            double b = lexemes.at(i - 1).getValue();
+            a = lexemes.at(i - 2).getValue();
+            b = lexemes.at(i - 1).getValue();
             std::string operation = lexemes.at(i).getString();
-            Lexeme* lexeme;
             if (operation == "+")
             {
                 lexeme = new Lexeme(a + b);
-                lexemes.erase(i);
-                lexemes.erase(i - 1);
-                lexemes.erase(i - 2);
-                lexemes.insert(i - 2, *lexeme);
-                i = 0;
             }
             else if (operation == "-")
             {
                 lexeme = new Lexeme(a - b);
-                lexemes.erase(i);
-                lexemes.erase(i - 1);
-                lexemes.erase(i - 2);
-                lexemes.insert(i - 2, *lexeme);
-                i = 0;
             }
             else if (operation == "*")
             {
                 lexeme = new Lexeme(a * b);
-                lexemes.erase(i);
-                lexemes.erase(i - 1);
-                lexemes.erase(i - 2);
-                lexemes.insert(i - 2, *lexeme);
-                i = 0;
             }
             else if (operation == "/")
             {
+                if (b == 0)
+                {
+                    throw "Division by zero!";
+                }
                 lexeme = new Lexeme(a / b);
-                lexemes.erase(i);
-                lexemes.erase(i - 1);
-                lexemes.erase(i - 2);
-                lexemes.insert(i - 2, *lexeme);
-                i = 0;
             }
             else if (operation == "^")
             {
                 lexeme = new Lexeme(pow(a, b));
-                lexemes.erase(i);
-                lexemes.erase(i - 1);
-                lexemes.erase(i - 2);
-                lexemes.insert(i - 2, *lexeme);
-                i = 0;
+            }
+            else if (operation == "log(")
+            {
+                if (log(a) <= 0 || log(a) == 1)
+                {
+                    throw "The base of the logarithm must be greater than zero and must not be equal to one!";
+                }
+                if (a <= 0 || b <= 0)
+                {
+                    throw "The number of the logarithm must be positive!";
+                }
+                lexeme = new Lexeme(log(b) / log(a));
             }
             else
             {
-                lexeme = nullptr;
+                specificOperation = false;
+            }
+            if (specificOperation)
+            {
+                swapToAnswer(lexemes, i, *lexeme);
+                delete lexeme;
             }
         }
     }
-    //if (lexeme != nullptr)
-    //{
-    //    delete lexeme;
-    //}
+    return lexemes.at(0).getValue();
+}
+
+void Solver::swapToAnswer(LexemeString& lexemes, int& index, Lexeme ans)
+{
+    lexemes.erase(index);
+    lexemes.erase(index - 1);
+    lexemes.erase(index - 2);
+    lexemes.insert(index - 2, ans);
+    index = 0;
 }

@@ -52,6 +52,9 @@ Lexeme* Parser::getLexeme(const std::string& str)
     bool haveExponentSymbol = false;
     bool haveExponentSignSymbol = false;
     bool isNumber = false;
+    bool isLog = false;
+
+    int n = 0;
 
     std::string resStr = "";
     Lexeme* lexeme = nullptr;
@@ -95,6 +98,25 @@ Lexeme* Parser::getLexeme(const std::string& str)
         index++;
     }
 
+    while (str[index] == 'l' || str[index] == 'o' || str[index] == 'g')
+    {
+        n++;
+        index++;
+    }
+
+    if (n == 3)
+    {
+        std::string substr = str.substr((long long)index - 3, 4);
+        if (isLogFunctionStart(substr))
+        {
+            isLog = true;
+        }
+    }
+    else if (n != 0 && n != 3)
+    {
+        std::cout << "Function name error!" << std::endl;;
+    }
+
     if (isExponentSymbol(str[index]) && haveExponentSymbol)
     {
         std::cout << "Two exponent symbols in one number!" << std::endl;;
@@ -131,6 +153,15 @@ Lexeme* Parser::getLexeme(const std::string& str)
             lexeme = new Lexeme(std::stod(resStr));
         }
         prevIndexOpenParenthesis = false;
+    }
+    else if (isLog)
+    {
+        prevIndexOpenParenthesis = true;
+        lexeme = new Lexeme("log(");
+    }
+    else if (isComma(str[index]))
+    {
+        lexeme = new Lexeme(",");
     }
     else if (isArithmeticSign(str[index]) || isParenthesis(str[index]))
     {
@@ -206,6 +237,39 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
         if (lexemes.at(i).getType() == LexemeType::operation)
         {
             countOperations++;
+            if (!checkNextDecimal(lexemes, i) && !checkNextOpenParenthesis(lexemes, i) && !checkNextStartFunction(lexemes, i))
+            {
+                code += '6';
+                std::cout << "Operation argument error!" << std::endl;
+            }
+            if(checkNextOpenParenthesis(lexemes, i) || checkNextStartFunction(lexemes, i))
+            {
+                if (lexemes.at(i).getString() == "+")
+                {
+                    lexemes.erase(i);
+                    size--;
+                    i--;
+                }
+                else if (lexemes.at(i).getString() == "-")
+                {
+                    lexemes.insert(i, Lexeme(0));
+                    size++;
+                    i++;
+                }
+                else
+                {
+                    code += '6';
+                    std::cout << "Operation argument error!" << std::endl;
+                }
+            }
+            if (checkPrevOpenParenthesis(lexemes, i))
+            {
+                if (lexemes.at(i).getString() != "+" && lexemes.at(i).getString() != "-")
+                {
+                    code += '6';
+                    std::cout << "Operation argument error!" << std::endl;
+                }
+            }
         }
 
         if (lexemes.at(i).getType() == LexemeType::parenthesis)
@@ -240,7 +304,7 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
                 else
                 {
                     code += '1';
-                    std::cout << "Parenthesis error!" << std::endl;;
+                    std::cout << "Parenthesis error!" << std::endl;
                 }
 
                 if (multiplyDetectNext(lexemes, i))
@@ -248,6 +312,25 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
                     lexemes.insert(i + 1, (Lexeme("*")));
                     size++;
                 }
+            }
+        }
+
+        if (lexemes.at(i).getType() == LexemeType::function)
+        {
+            if (lexemes.at(i).getString() == "log(")
+            {
+                countOperations++;
+                openParenthesis.push(1);
+                if (multiplyDetectPrev(lexemes, i))
+                {
+                    lexemes.insert(i, (Lexeme("*")));
+                    size++;
+                    i++;
+                }
+            }
+            if (lexemes.at(i).getString() == ")")
+            {
+                openParenthesis.pop();
             }
         }
 
@@ -266,6 +349,20 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
         }
     }
 
+    for (int i = 0; i < lexemes.size(); i++)
+    {
+        if (lexemes.at(i).getType() == LexemeType::function)
+        {
+            if (lexemes.at(i).getString() == "log(")
+            {
+                if (!getLenghtFunction(&lexemes, i + 1))
+                {
+                    code += '7';
+                    std::cout << "Function error!" << std::endl;
+                }
+            }
+        }
+    }
 
     if (openParenthesis.size() > 0)
     {
@@ -297,6 +394,42 @@ bool Parser::checkNextCloseParenthesis(LexemeString& lexemes, int i)
     if (((long long)i + 1) < lexemes.size())
     {
         if (lexemes.at((long long)i + 1).getString() == ")")
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Parser::checkNextOpenParenthesis(LexemeString& lexemes, int i)
+{
+    if (((long long)i + 1) < lexemes.size())
+    {
+        if (lexemes.at((long long)i + 1).getString() == "(")
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Parser::checkPrevCloseParenthesis(LexemeString& lexemes, int i)
+{
+    if (((long long)i - 1) >= 0)
+    {
+        if (lexemes.at((long long)i - 1).getString() == ")")
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Parser::checkPrevOpenParenthesis(LexemeString& lexemes, int i)
+{
+    if (((long long)i - 1) >= 0)
+    {
+        if (lexemes.at((long long)i - 1).getString() == "(")
         {
             return true;
         }
@@ -346,6 +479,93 @@ bool Parser::checkDoubleOperations(LexemeString& lexemes, int i)
         && lexemes.at(i).getType() == LexemeType::operation)
     {
         return true;
+    }
+    return false;
+}
+
+bool Parser::checkNextDecimal(LexemeString& lexemes, int i)
+{
+    if (((long long)i + 1) < lexemes.size())
+    {
+        if (lexemes.at((long long)i + 1).getType() == LexemeType::decimal)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Parser::checkNextStartFunction(LexemeString& lexemes, int i)
+{
+    if (((long long)i + 1) < lexemes.size())
+    {
+        if (lexemes.at((long long)i + 1).getType() == LexemeType::function)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+int Parser::getLenghtFunction(LexemeString* lexemes, int i)
+{
+    std::stack<int> parenthesisStack;
+    int startIndex = i;
+    int numOfCommas = 0;
+    int size = lexemes->size();
+    lexemes->insert(i, Lexeme("("));
+    i++;
+    size++;
+    while (i < size)
+    {
+        if (lexemes->at(i).getType() == LexemeType::function && lexemes->at(i).getString() == "log(")
+        {
+            int offset = getLenghtFunction(lexemes, i+1);
+            if (offset == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                i += offset;
+            }
+        }
+        if (lexemes->at(i).getType() == LexemeType::parenthesis && lexemes->at(i).getString() == "(")
+        {
+            parenthesisStack.push(1);
+        }
+        if (lexemes->at(i).getType() == LexemeType::parenthesis && lexemes->at(i).getString() == ")" && !parenthesisStack.empty())
+        {
+            parenthesisStack.pop();
+        }
+        if (lexemes->at(i).getType() == LexemeType::function && lexemes->at(i).getString() == ",")
+        {
+            if (!parenthesisStack.empty())
+            {
+                return 0;
+            }
+            else
+            {
+                lexemes->insert(i, Lexeme(")"));
+                lexemes->insert(i+2, Lexeme("("));
+                size += 2;
+                i += 2;
+                if (numOfCommas == 0)
+                {
+                    numOfCommas++;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+        if (lexemes->at(i).getType() == LexemeType::parenthesis && lexemes->at(i).getString() == ")" && parenthesisStack.empty())
+        {
+            lexemes->insert(i, Lexeme(")"));
+            return i - startIndex + 1;
+        }
+        i++;
     }
     return false;
 }
@@ -422,9 +642,33 @@ bool Parser::isIndention(const char symbol)
     }
 }
 
+bool Parser::isLogFunctionStart(std::string str)
+{
+    if (str == "log(")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Parser::isComma(const char symbol)
+{
+    if (symbol == ',')
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 bool Parser::isExponentSymbol(const char symbol)
 {
-    if (symbol == 'E' || symbol == 'Å')
+    if (symbol == 'E' || symbol == 'e')
     {
         return true;
     }

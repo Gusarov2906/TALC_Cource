@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="Lexeme.cpp" />
     <ClCompile Include="LexemeString.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="Solver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="Lexeme.h" />
     <ClInclude Include="LexemeString.h" />
     <ClInclude Include="Parser.h" />

@@ -8,5 +8,5 @@ public:
     Solver();
     ~Solver();
     double solve(LexemeString lexemes);
-    void oneStep(LexemeString& lexemes);
+    void swapToAnswer(LexemeString& lexemes, int& index, Lexeme ans);
 };

@@ -28,7 +28,7 @@ Lexeme::Lexeme(std::string str)
 		{
 			this->priority = 4;
 		}
-	} else 
+	} else if (str == "log(" || str == ",")
 	{
 		this->type = LexemeType::function;
 		this->priority = 5;
@@ -66,6 +66,29 @@ std::string Lexeme::getString()
 	{
 	case LexemeType::decimal:
 		return std::to_string(num);
+		break;
+	default:
+		return str;
+		break;
+	}
+}
+
+std::string Lexeme::getFormatedString()
+{
+	switch (this->type)
+	{
+	case LexemeType::decimal:
+		return std::to_string(num);
+		break;
+	case LexemeType::function:
+		if (this->str == "log(")
+		{
+			return "log";
+		}
+		else
+		{
+			return str;
+		}
 		break;
 	default:
 		return str;

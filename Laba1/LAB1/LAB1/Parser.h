@@ -17,7 +17,7 @@ private:
 
 	std::string checkLexemes(LexemeString& lexemes);
 
-	double* getNumberInExponentForm(std::string& in);
+	double* getNumberInExponentForm(std::string& in, char expSymbol);
 
 	bool isNegativeSign(const std::string str);
 	bool isArithmeticSign(const char symbol);
@@ -29,10 +29,13 @@ private:
 	bool isComma(const char symbol);
 	void deleteEmptyParethesis(LexemeString* lexemes, int& size, int& i);
 
+	char getExponentSymbol(const char symbol);
+
 	bool checkNextCloseParenthesis(LexemeString& lexemes, int i);
 	bool checkNextOpenParenthesis(LexemeString& lexemes, int i);
 	bool checkPrevCloseParenthesis(LexemeString& lexemes, int i);
 	bool checkPrevOpenParenthesis(LexemeString& lexemes, int i);
+	bool checkNextOperation(LexemeString& lexemes, int i);
 	bool multiplyDetectNext(LexemeString& lexemes, int i);
 	bool multiplyDetectPrev(LexemeString& lexemes, int i);
 	bool checkDoubleNumbers(LexemeString& lexemes, int i);

@@ -47,11 +47,23 @@ double Solver::solve(LexemeString lexemes)
             }
             else if (operation == "^")
             {
-                lexeme = new Lexeme(pow(a, b));
+                //if (b < 0 && (b - floor(b) == 0))
+                //{
+                //    throw "The base of the logarithm must be greater than zero and must not be equal to one!";
+                //}
+                double res = pow(a, b);
+                if (res == res)
+                {
+                    lexeme = new Lexeme(pow(a, b));
+                }
+                else
+                {
+                    throw "Exponentiation error!";
+                }
             }
             else if (operation == "log(")
             {
-                if (log(a) <= 0 || log(a) == 1)
+                if (log10(a) == 1 || log10(a) == 0)
                 {
                     throw "The base of the logarithm must be greater than zero and must not be equal to one!";
                 }
@@ -59,7 +71,7 @@ double Solver::solve(LexemeString lexemes)
                 {
                     throw "The number of the logarithm must be positive!";
                 }
-                lexeme = new Lexeme(log(b) / log(a));
+                lexeme = new Lexeme(log10(b) / log10(a));
             }
             else
             {
@@ -72,7 +84,14 @@ double Solver::solve(LexemeString lexemes)
             }
         }
     }
-    return lexemes.at(0).getValue();
+    if (lexemes.size() == 1)
+    {
+        return lexemes.at(0).getValue();
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 void Solver::swapToAnswer(LexemeString& lexemes, int& index, Lexeme ans)

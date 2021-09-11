@@ -54,6 +54,7 @@ Lexeme* Parser::getLexeme(const std::string& str)
     bool isNumber = false;
     bool isLog = false;
 
+    char expSymbol;
     int n = 0;
 
     std::string resStr = "";
@@ -84,7 +85,9 @@ Lexeme* Parser::getLexeme(const std::string& str)
 
         if (isExponentSymbol(str[index]))
         {
+
             haveExponentSymbol = true;
+            expSymbol = getExponentSymbol(str[index]);
         }
 
         if (((str[index]) == '-' || (str[index]) == '+') && !haveExponentSignSymbol && haveExponentSymbol)
@@ -141,12 +144,20 @@ Lexeme* Parser::getLexeme(const std::string& str)
         index--;
         if (haveExponentSymbol && haveExponentSignSymbol)
         {
-            double* num = getNumberInExponentForm(resStr);
+            double* num = getNumberInExponentForm(resStr, expSymbol);
             if (num != nullptr)
             {
                 lexeme = new Lexeme(*num);
                 delete num;
             }
+        }
+        else if (haveExponentSymbol)
+        {
+            std::cout << "Exponent symbol error!" << std::endl;;
+        }
+        else if (haveExponentSignSymbol)
+        {
+            std::cout << "Exponent sign error!" << std::endl;;
         }
         else
         {
@@ -184,22 +195,22 @@ Lexeme* Parser::getLexeme(const std::string& str)
     return lexeme;
 }
 
-double* Parser::getNumberInExponentForm(std::string& in)
+double* Parser::getNumberInExponentForm(std::string& in, char expSymbol)
 {
     double* num = new double();
-    *num = std::stod(in.substr(0, in.rfind('E')));
-    if (in.rfind('E') + 2 < in.size())
+    *num = std::stod(in.substr(0, in.rfind(expSymbol)));
+    if (in.rfind(expSymbol) + 2 < in.size())
     {
-        if (in[in.rfind('E') + 1] == '+')
+        if (in[in.rfind(expSymbol) + 1] == '+')
         {
-            for (int i = 0; i < std::stod(in.substr(in.rfind('E') + 2, in.back())); i++)
+            for (int i = 0; i < std::stod(in.substr(in.rfind(expSymbol) + 2, in.back())); i++)
             {
                 *num *= 10;
             }
         }
-        else if (in[in.rfind('E') + 1] == '-')
+        else if (in[in.rfind(expSymbol) + 1] == '-')
         {
-            for (int i = 0; i < std::stod(in.substr(in.rfind('E') + 2, in.back())); i++)
+            for (int i = 0; i < std::stod(in.substr(in.rfind(expSymbol) + 2, in.back())); i++)
             {
                 *num /= 10;
             }
@@ -227,7 +238,7 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
     int countOperations = 0;
     int size = lexemes.size();
 
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < lexemes.size(); i++)
     {
         if (lexemes.at(i).getType() == LexemeType::decimal)
         {
@@ -237,30 +248,30 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
         if (lexemes.at(i).getType() == LexemeType::operation)
         {
             countOperations++;
-            if (!checkNextDecimal(lexemes, i) && !checkNextOpenParenthesis(lexemes, i) && !checkNextStartFunction(lexemes, i))
-            {
-                code += '6';
-                std::cout << "Operation argument error!" << std::endl;
-            }
-            if(checkNextOpenParenthesis(lexemes, i) || checkNextStartFunction(lexemes, i))
+            if((checkNextOpenParenthesis(lexemes, i) || checkNextStartFunction(lexemes, i)) &&
+                (checkPrevOpenParenthesis(lexemes, i) || i == 0))
             {
                 if (lexemes.at(i).getString() == "+")
                 {
                     lexemes.erase(i);
-                    size--;
                     i--;
                 }
                 else if (lexemes.at(i).getString() == "-")
                 {
                     lexemes.insert(i, Lexeme(0));
-                    size++;
                     i++;
                 }
-                else
-                {
-                    code += '6';
-                    std::cout << "Operation argument error!" << std::endl;
-                }
+                //else
+                //{
+                //    code += '6';
+                //    std::cout << "Operation argument error!" << std::endl;
+                //}
+            }
+            if (!checkNextDecimal(lexemes, i) && !checkNextOpenParenthesis(lexemes, i)
+                && !checkNextStartFunction(lexemes, i) || checkPrevOpenParenthesis(lexemes, i))
+            {
+                code += '6';
+                std::cout << "Operation argument error!" << std::endl;
             }
             if (checkPrevOpenParenthesis(lexemes, i))
             {
@@ -270,6 +281,12 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
                     std::cout << "Operation argument error!" << std::endl;
                 }
             }
+            if (i == 0 || lexemes.at(i - 1).getType() != LexemeType::decimal
+                && lexemes.at(i - 1).getType() != LexemeType::parenthesis)
+            {
+                code += '6';
+                std::cout << "Operation argument error!" << std::endl;
+            }
         }
 
         if (lexemes.at(i).getType() == LexemeType::parenthesis)
@@ -278,6 +295,7 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
             {
                 if (checkNextCloseParenthesis(lexemes, i))
                 {
+                    size = lexemes.size();
                     deleteEmptyParethesis(&lexemes, size, i);
                     while (!openParenthesis.empty())
                     {
@@ -291,7 +309,6 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
                 if (multiplyDetectPrev(lexemes, i))
                 {
                     lexemes.insert(i, (Lexeme("*")));
-                    size++;
                     i++;
                 }
             }
@@ -310,7 +327,6 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
                 if (multiplyDetectNext(lexemes, i))
                 {
                     lexemes.insert(i + 1, (Lexeme("*")));
-                    size++;
                 }
             }
         }
@@ -324,7 +340,6 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
                 if (multiplyDetectPrev(lexemes, i))
                 {
                     lexemes.insert(i, (Lexeme("*")));
-                    size++;
                     i++;
                 }
             }
@@ -389,6 +404,22 @@ void Parser::deleteEmptyParethesis(LexemeString* lexemes, int& size, int& i)
     i = -1;
 }
 
+char Parser::getExponentSymbol(const char symbol)
+{
+    if (symbol == 'E')
+    {
+        return 'E';
+    }
+    else if (symbol == 'e')
+    {
+        return 'e';
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
 bool Parser::checkNextCloseParenthesis(LexemeString& lexemes, int i)
 {
     if (((long long)i + 1) < lexemes.size())
@@ -430,6 +461,18 @@ bool Parser::checkPrevOpenParenthesis(LexemeString& lexemes, int i)
     if (((long long)i - 1) >= 0)
     {
         if (lexemes.at((long long)i - 1).getString() == "(")
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Parser::checkNextOperation(LexemeString& lexemes, int i)
+{
+    if (((long long)i + 1) < lexemes.size())
+    {
+        if (lexemes.at((long long)i + 1).getType() == LexemeType::operation)
         {
             return true;
         }
@@ -516,7 +559,7 @@ int Parser::getLenghtFunction(LexemeString* lexemes, int i)
     lexemes->insert(i, Lexeme("("));
     i++;
     size++;
-    while (i < size)
+    while (i < lexemes->size())
     {
         if (lexemes->at(i).getType() == LexemeType::function && lexemes->at(i).getString() == "log(")
         {
@@ -560,10 +603,12 @@ int Parser::getLenghtFunction(LexemeString* lexemes, int i)
                 }
             }
         }
-        if (lexemes->at(i).getType() == LexemeType::parenthesis && lexemes->at(i).getString() == ")" && parenthesisStack.empty())
+        if (lexemes->at(i).getType() == LexemeType::parenthesis
+            && lexemes->at(i).getString() == ")" && parenthesisStack.empty()
+            && numOfCommas == 1)
         {
             lexemes->insert(i, Lexeme(")"));
-            return i - startIndex + 1;
+            return i - startIndex + 3;
         }
         i++;
     }

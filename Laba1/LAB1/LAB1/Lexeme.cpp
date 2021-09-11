@@ -83,7 +83,7 @@ std::string Lexeme::getFormatedString()
 	case LexemeType::function:
 		if (this->str == "log(")
 		{
-			return "log";
+			return "log(";
 		}
 		else
 		{

@@ -12,6 +12,7 @@ public:
 	ConsoleManager();
 	~ConsoleManager();
 	void run();
+	double execute(std::string str);
 
 private:
 	Parser parser;

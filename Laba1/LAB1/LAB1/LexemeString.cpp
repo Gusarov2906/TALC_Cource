@@ -67,7 +67,7 @@ std::string LexemeString::toString()
                 for (size_t i = tmp.size() - 1; tmp[i] == '0'; i--)
                     tmp.erase(i, 1);
 
-            if (tmp[tmp.size() - 1] == '.')
+            if (tmp[tmp.size() - 1] == ',')
                 tmp.erase(tmp.size() - 1, 1);
             res += tmp;
         }

@@ -27,6 +27,7 @@ void ConsoleManager::run()
 		{
 			std::cout << "clear         - clear console" << std::endl;
 			std::cout << "exout <1/0>   - on/off extended output" << std::endl;
+			std::cout << "exit   - to stop program" << std::endl;
 			std::cout << std::endl;
 		}
 		else if (str == "clear")
@@ -42,6 +43,10 @@ void ConsoleManager::run()
 		{
 			exOut = false;
 			std::cout << std::endl;
+		}
+		else if (str == "exit")
+		{
+			break;
 		}
 		else
 		{

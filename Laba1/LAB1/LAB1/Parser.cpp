@@ -161,6 +161,11 @@ Lexeme* Parser::getLexeme(const std::string& str)
         }
         else
         {
+            //if (resStr[0] == '.')
+            //{
+            //    std::string tmp = '0' + resStr;
+            //    resStr = tmp;
+            //}
             lexeme = new Lexeme(std::stod(resStr));
         }
         prevIndexOpenParenthesis = false;

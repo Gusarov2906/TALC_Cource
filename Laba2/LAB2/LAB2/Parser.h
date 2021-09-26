@@ -2,17 +2,13 @@
 #include <string>
 #include <vector>
 
-#include "State.h"
+#include "Transition.h"
 
 class Parser
 {
 public:
     Parser();
-    std::vector<State> getStates(std::string str);
-    void parse(std::string filename);
-
-protected:
-    std::vector<State> states;
-    void sort();
+    Transition getTransition(std::string str);
+    std::vector<Transition> parse(std::string filename);
 };
 

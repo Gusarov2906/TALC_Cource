@@ -7,13 +7,24 @@ Parser::Parser()
 {
 }
 
-std::vector<State> Parser::getStates(std::string str)
+Transition Parser::getTransition(std::string str)
 {
-    return std::vector<State>();
+    const std::regex r(R"((^q\d{1,2}),(.{1})=([fq]\d{1,2})$)");
+    std::smatch m;
+    if (std::regex_match(str, m, r))
+    {
+        if (m.ready())
+        {
+            return Transition(State(m.str(1)), State(m.str(3)), m.str(2)[0]);
+        }
+    }
+    return Transition(State("def"), State("def"), '\0');
 }
 
-void Parser::parse(std::string filename)
+std::vector<Transition> Parser::parse(std::string filename)
 {
+    std::vector<Transition> transitions;
+
     const std::regex r(R"(^q(\d{1,2}),(.{1})=([fq])(\d{1,2})$)");
     std::ifstream file(filename);
 
@@ -24,7 +35,7 @@ void Parser::parse(std::string filename)
         {
             if (std::regex_match(line, r))
             {
-                std::cout << line << std::endl;
+                transitions.push_back(this->getTransition(line));
             }
         }
         file.close();
@@ -33,8 +44,5 @@ void Parser::parse(std::string filename)
     {
         std::cout << "File error!" << std::endl;
     }
-}
-
-void Parser::sort()
-{
+    return transitions;
 }

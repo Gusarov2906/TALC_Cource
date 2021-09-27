@@ -31,12 +31,18 @@ std::vector<Transition> Parser::parse(std::string filename)
     if (file.is_open())
     {
         std::string line;
+        int i = 0;
         while (std::getline(file, line))
         {
             if (std::regex_match(line, r))
             {
                 transitions.push_back(this->getTransition(line));
             }
+            else
+            {
+                std::cout << "Line " << i << " is not transition!" << std::endl;
+            }
+            i++;
         }
         file.close();
     }

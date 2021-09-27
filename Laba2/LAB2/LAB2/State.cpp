@@ -1,11 +1,101 @@
 #include "State.h"
+#include <iostream>
 
 State::State(std::string name)
 {
-    this->name = name;
+    this->m_name = name;
+    m_isStart = false;
+    m_isFinal = false;
+
+    if (name.length() > 1)
+    {
+        if (name[0] == 'q' && name[1] == '0')
+        {
+            m_isStart = true;
+        }
+        if (name[0] == 'f')
+        {
+            m_isFinal = true;
+        }
+    }
+    else
+    {
+        std::cout << "State error!";
+    }
+
 }
 
-std::string State::getName()
+std::string State::getName() const
 {
-    return this->name;
+    return this->m_name;
+}
+
+const bool State::isStart() const
+{
+    return m_isStart;
+}
+
+const bool State::isFinal() const
+{
+    return m_isFinal;
+}
+
+bool State::operator==(const State& right)
+{
+    return std::stoi(this->m_name.substr(1)) == std::stoi(right.m_name.substr(1));
+}
+
+bool State::operator!=(const State& right)
+{
+    return !(std::stoi(this->m_name.substr(1)) == std::stoi(right.m_name.substr(1)));
+}
+
+bool State::operator>=(const State& right)
+{
+    return std::stoi(this->m_name.substr(1)) >= std::stoi(right.m_name.substr(1));
+}
+
+bool State::operator<=(const State& right)
+{
+    return std::stoi(this->m_name.substr(1)) <= std::stoi(right.m_name.substr(1));
+}
+
+bool State::operator>(const State& right)
+{
+    return std::stoi(this->m_name.substr(1)) > std::stoi(right.m_name.substr(1));
+}
+
+bool State::operator<(const State& right)
+{
+    return std::stoi(this->m_name.substr(1)) < std::stoi(right.m_name.substr(1));
+}
+
+bool operator>(const State& left, const State& right)
+{
+    return std::stoi(left.m_name.substr(1)) > std::stoi(right.m_name.substr(1));
+}
+
+bool operator<(const State& left, const State& right)
+{
+    return std::stoi(left.m_name.substr(1)) < std::stoi(right.m_name.substr(1));
+}
+
+bool operator==(const State& left, const State& right)
+{
+    return std::stoi(left.m_name.substr(1)) == std::stoi(right.m_name.substr(1));
+}
+
+bool operator!=(const State& left, const State& right)
+{
+    return !(std::stoi(left.m_name.substr(1)) == std::stoi(right.m_name.substr(1)));
+}
+
+bool operator>=(const State& left, const State& right)
+{
+    return std::stoi(left.m_name.substr(1)) >= std::stoi(right.m_name.substr(1));
+}
+
+bool operator<=(const State& left, const State& right)
+{
+    return std::stoi(left.m_name.substr(1)) <= std::stoi(right.m_name.substr(1));
 }

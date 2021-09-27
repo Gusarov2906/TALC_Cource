@@ -11,4 +11,3 @@ public:
     Transition getTransition(std::string str);
     std::vector<Transition> parse(std::string filename);
 };
-

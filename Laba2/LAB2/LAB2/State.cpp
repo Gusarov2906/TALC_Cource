@@ -40,6 +40,28 @@ const bool State::isFinal() const
     return m_isFinal;
 }
 
+State* State::nextState(char sym)
+{
+    for (Transition item : m_transitions)
+    {
+        if (item.getSymbol() == sym)
+        {
+            return item.getToState();
+        }
+    }
+    return nullptr;
+}
+
+std::vector<Transition> State::getTransitions() const
+{
+    return this->m_transitions;
+}
+
+void State::addTransition(Transition transition)
+{
+    this->m_transitions.push_back(transition);
+}
+
 bool State::operator==(const State& right)
 {
     return std::stoi(this->m_name.substr(1)) == std::stoi(right.m_name.substr(1));

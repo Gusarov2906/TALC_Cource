@@ -141,14 +141,14 @@
   <ItemGroup>
     <ClInclude Include="Parser.h" />
     <ClInclude Include="State.h" />
-    <ClInclude Include="StateMachine.h" />
+    <ClInclude Include="FinalStateMachine.h" />
     <ClInclude Include="Transition.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="State.cpp" />
-    <ClCompile Include="StateMachine.cpp" />
+    <ClCompile Include="FinalStateMachine.cpp" />
     <ClCompile Include="Transition.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,22 +1,41 @@
 #include <iostream>
 #include "Parser.h"
-#include "StateMachine.h"
+#include "FinalStateMachine.h"
 
 int main()
 {
     std::string filename;
     std::string str;
     Parser parser;
-    std::vector<Transition> transitions;
+    std::map<std::string, State*> states;
     std::cout << "Write file name: ";
-    std::cin >> filename;
-    std::cout << "Write str: ";
-    std::cin >> str;
-    StateMachine sm (parser.parse(filename));
-    for (Transition item : sm.getTransactions())
+    std::getline(std::cin, filename);
+
+    FinalStateMachine sm (parser.parse(filename));
+    std::vector<Transition> transitions;
+    for (std::pair<std::string, State*> item : sm.getStates())
     {
-        std::cout << item.toString() << std::endl;
+        for (Transition transition : item.second->getTransitions())
+        {
+            transitions.push_back(transition);
+        }
     }
-    std::cout << sm.isValid(str);
+    sm.sortAndPrintTransactions(transitions);
+    std::cout << std::endl;
+
+
+    while (1)
+    {
+        std::cout << "Write str: ";
+        std::getline(std::cin, str);
+        if (sm.isValid(str))
+        {
+            std::cout << "Str is correct :)" << std::endl;
+        }
+        else
+        {
+            std::cout << "Str is not correct :(" << std::endl;
+        }
+    }
     return 0;
 }

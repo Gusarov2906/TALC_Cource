@@ -7,7 +7,7 @@ Parser::Parser()
 {
 }
 
-Transition Parser::getTransition(std::string str)
+void Parser::getTransition(std::string str)
 {
     const std::regex r(R"((^q\d{1,2}),(.{1})=([fq]\d{1,2})$)");
     std::smatch m;
@@ -15,16 +15,17 @@ Transition Parser::getTransition(std::string str)
     {
         if (m.ready())
         {
-            return Transition(State(m.str(1)), State(m.str(3)), m.str(2)[0]);
+            states.try_emplace(m.str(1), new State(m.str(1)));
+            states.try_emplace(m.str(3), new State(m.str(3)));
+            states[m.str(1)]->addTransition(Transition(states[m.str(1)], states[m.str(3)], m.str(2)[0]));
         }
     }
-    return Transition(State("def"), State("def"), '\0');
+  
 }
 
-std::vector<Transition> Parser::parse(std::string filename)
+std::map<std::string, State*> Parser::parse(std::string filename)
 {
-    std::vector<Transition> transitions;
-
+    states.clear();
     const std::regex r(R"(^q(\d{1,2}),(.{1})=([fq])(\d{1,2})$)");
     std::ifstream file(filename);
 
@@ -36,7 +37,7 @@ std::vector<Transition> Parser::parse(std::string filename)
         {
             if (std::regex_match(line, r))
             {
-                transitions.push_back(this->getTransition(line));
+                this->getTransition(line);
             }
             else
             {
@@ -50,5 +51,5 @@ std::vector<Transition> Parser::parse(std::string filename)
     {
         std::cout << "File error!" << std::endl;
     }
-    return transitions;
+    return this->states;
 }

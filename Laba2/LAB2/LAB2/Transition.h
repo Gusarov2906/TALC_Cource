@@ -1,19 +1,25 @@
 #pragma once
 #include <vector>
+#include <iostream>
 
-#include "State.h"
+class State;
+
 
 class Transition
 {
 public:
-    Transition(State from, State to, char symbol);
+    Transition(State* from, State* to, char symbol);
+    Transition();
+
     std::string toString() const;
 
-    const std::vector<State> getFromStates() const;
-    const std::vector<State> getToStates() const;
+    std::vector<State*> getFromStates() const;
+    std::vector<State*> getToStates() const;
 
-    const State getFromState() const;
-    const State getToState() const;
+    bool isInitialized();
+
+    State* getFromState() const;
+    State* getToState() const;
 
     const char getSymbol() const;
 
@@ -32,8 +38,8 @@ public:
     bool operator<=(const Transition& right);
 
 private:
-    std::vector<State> m_from;
-    std::vector<State> m_to;
+    std::vector<State*> m_from;
+    std::vector<State*> m_to;
     char m_symbol;
 
 };

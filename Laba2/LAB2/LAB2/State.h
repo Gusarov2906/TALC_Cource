@@ -8,14 +8,18 @@ class State
 {
 public:
     State(std::string name);
+
+    void setName(std::string name);
+
     std::string getName() const;
 
     const bool isStart() const;
     const bool isFinal() const;
 
-    State* nextState(char sym);
+    std::vector<State*> nextState(char sym);
 
     std::vector<Transition> getTransitions() const;
+    std::vector<Transition> getTransitions(char sym) const;
 
     void addTransition(Transition transition);
 

@@ -139,12 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Determinator.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="FinalStateMachine.h" />
     <ClInclude Include="Transition.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Determinator.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="State.cpp" />

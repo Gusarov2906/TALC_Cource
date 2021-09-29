@@ -17,4 +17,3 @@ protected:
     bool doStep(State* currentState, std::string in);
     int index ;
 };
-

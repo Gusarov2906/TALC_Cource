@@ -10,7 +10,7 @@ class Parser
 {
 public:
     Parser();
-    void getTransition(std::string str);
+    bool getTransition(std::string str);
     std::map<std::string, State*> parse(std::string filename);
 
 protected:

@@ -7,7 +7,7 @@ Parser::Parser()
 {
 }
 
-void Parser::getTransition(std::string str)
+bool Parser::getTransition(std::string str)
 {
     const std::regex r(R"((^q\d{1,2}),(.{1})=([fq]\d{1,2})$)");
     std::smatch m;
@@ -18,9 +18,14 @@ void Parser::getTransition(std::string str)
             states.try_emplace(m.str(1), new State(m.str(1)));
             states.try_emplace(m.str(3), new State(m.str(3)));
             states[m.str(1)]->addTransition(Transition(states[m.str(1)], states[m.str(3)], m.str(2)[0]));
+            if (states[m.str(1)]->nextState(m.str(2)[0]).size() > 1)
+            {
+                return false;
+            }
         }
     }
-  
+    return true;
+
 }
 
 std::map<std::string, State*> Parser::parse(std::string filename)
@@ -37,7 +42,10 @@ std::map<std::string, State*> Parser::parse(std::string filename)
         {
             if (std::regex_match(line, r))
             {
-                this->getTransition(line);
+                if (!this->getTransition(line))
+                {
+                    std::cout << "Line " << i << " is not deterministic transition!" << std::endl;
+                }
             }
             else
             {
@@ -45,6 +53,7 @@ std::map<std::string, State*> Parser::parse(std::string filename)
             }
             i++;
         }
+        std::cout << std::endl;
         file.close();
     }
     else

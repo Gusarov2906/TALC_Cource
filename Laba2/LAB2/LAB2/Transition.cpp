@@ -9,11 +9,6 @@ Transition::Transition(State* from, State* to, char symbol)
     this->m_symbol = symbol;
 }
 
-Transition::Transition()
-{
-    this->m_symbol = '\0';
-}
-
 std::string Transition::toString() const
 {
     std::string res = "";

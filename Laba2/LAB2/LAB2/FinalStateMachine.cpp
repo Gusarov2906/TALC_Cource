@@ -10,8 +10,11 @@ int cmpfunc(const void* a, const void* b)
 void FinalStateMachine::sortAndPrintTransactions(std::vector<Transition> transitions)
 {
     std::vector<Transition> sortedTransitions = transitions;
-    qsort(&sortedTransitions[0], sortedTransitions.size(), sizeof(Transition), cmpfunc);
-    printTransactions(sortedTransitions);
+    if (transitions.size() > 0)
+    {
+        qsort(&sortedTransitions[0], sortedTransitions.size(), sizeof(Transition), cmpfunc);
+        printTransactions(sortedTransitions);
+    }
 }
 
 void FinalStateMachine::printTransactions(std::vector<Transition> transitions)
@@ -35,23 +38,22 @@ std::map<std::string, State*> FinalStateMachine::getStates()
 
 bool FinalStateMachine::isValid(std::string in)
 {
-    //check start and final
     if (m_states.size() <= 0)
     {
         return false;
     }
     index = 0;
 
-    State* currentState = this->m_states["q0"];
+    State* currentState = this->m_states["|q0|"];
     
     return doStep(currentState, in);
 }
 
 bool FinalStateMachine::doStep(State* currentState, std::string in)
 {
-    if (currentState->nextState(in[index]) != nullptr)
+    if (currentState->nextState(in[index]).size() > 0)
     {
-        currentState = currentState->nextState(in[index]);
+        currentState = currentState->nextState(in[index])[0];
         index++;
         if ((index) == in.size())
         {

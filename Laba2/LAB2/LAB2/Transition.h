@@ -9,7 +9,6 @@ class Transition
 {
 public:
     Transition(State* from, State* to, char symbol);
-    Transition();
 
     std::string toString() const;
 

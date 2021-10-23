@@ -2,7 +2,8 @@
 #include <fstream>
 #include <regex>
 #include <iostream>
-
+#include <sstream>
+#include "StringHelper.h"
 
 FileReader::FileReader()
 {
@@ -114,7 +115,13 @@ bool FileReader::isValid(std::string str)
         {
             m_nonTerminals.push_back(matchStr.str(1));
             rightPart = matchStr.str(2);
-            m_configCommands.push_back(ConfigCommand(" ", matchStr.str(1), rightPart));
+            std::vector<std::string> parts = StringHelper::split(rightPart, '|');
+
+            std::for_each(parts.begin(), parts.end(), [&parts](std::string& str)
+                {
+                    std::reverse(str.begin(), str.end());
+                });
+            m_configCommands.push_back(ConfigCommand(" ", matchStr.str(1), parts));
 
             std::string::const_iterator searchStart(rightPart.cbegin());
             while (std::regex_search(searchStart, rightPart.cend(), matchTerminal, regexTerminals))
@@ -124,6 +131,7 @@ bool FileReader::isValid(std::string str)
                 searchStart = matchTerminal.suffix().first;
             }
         }
+        m_configCommands.push_back(ConfigCommand(" ", "h0" , " "));
     }
     return true;
 }

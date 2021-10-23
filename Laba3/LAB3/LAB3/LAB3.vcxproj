@@ -143,12 +143,14 @@
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PushdownAutomaton.cpp" />
+    <ClCompile Include="StringHelper.cpp" />
     <ClCompile Include="SymbolTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigCommand.h" />
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="PushdownAutomaton.h" />
+    <ClInclude Include="StringHelper.h" />
     <ClInclude Include="SymbolTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

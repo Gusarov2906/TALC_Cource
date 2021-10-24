@@ -104,7 +104,7 @@ void FileReader::printCommandsChain()
 bool FileReader::isValid(std::string str)
 {
     const std::regex regexStr(R"(([A-Z])>(.*))");
-    const std::regex regexTerminals(R"(([^A-Z|]).)");
+    const std::regex regexTerminals(R"(([^A-Z|])(.|$))");
 
     std::smatch matchStr;
     std::smatch matchTerminal;

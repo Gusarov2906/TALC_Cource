@@ -33,9 +33,21 @@ bool PushdownAutomaton::checkStr(std::string str)
         }
         else if (tmp.getType() == 1)
         {
-            for (int i = 0; i < tmp.getResultStates()[0].size(); i++)
+            for (int i = 0; i < tmp.getResultStates().size(); i++)
             {
-                m_pushdownStack.push(std::string(1,tmp.getResultStates()[0][i]));
+                std::vector<std::string> additionChainConfiguration;
+                std::stack<std::string> pushdownStack = m_pushdownStack;
+                for (int j = 0; j < tmp.getResultStates()[i].size(); j++)
+                {
+                    pushdownStack.push(std::string(1,tmp.getResultStates()[i][j]));
+                }
+                m_recursionCount++;
+                if (recursiveCheck(input, pushdownStack, additionChainConfiguration))
+                {
+                    m_chainConfigurations.insert(m_chainConfigurations.end(), additionChainConfiguration.begin(),
+                        additionChainConfiguration.end());
+                    return true;
+                }
             }
         }
         else if(tmp.getType() == 3)
@@ -43,13 +55,77 @@ bool PushdownAutomaton::checkStr(std::string str)
             return (input.size() == 0) ? true : false;
         }
         
-        std::cout << "('S0', '" << stackToString(input) << "', '" << stackToString(m_pushdownStack) << "')" << std::endl;
+        m_chainConfigurations.push_back("('S0', '" + stackToString(input) + "', '" + stackToString(m_pushdownStack) + "')");
+    }
+    return false;
+}
+
+std::vector<std::string> PushdownAutomaton::getChainConfigurations()
+{
+    return m_chainConfigurations;
+}
+
+bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack<std::string> pushdownStack, std::vector<std::string>& chainConfigurations)
+{
+    ConfigCommand tmp;
+
+    while (1)
+    {
+        if (m_recursionCount > 5000)
+        {
+            return false;
+        }
+
+        tmp = getCommandByPushdownVal(pushdownStack.top());
+        if (tmp.getType() == 0)
+        {
+            return false;
+        }
+
+        pushdownStack.pop();
+
+        if (tmp.getType() == 2)
+        {
+            if (input.top() == tmp.getInputVal())
+            {
+                input.pop();
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if (tmp.getType() == 1)
+        {
+            for (int i = 0; i < tmp.getResultStates().size(); i++)
+            {
+                std::vector<std::string> additionChainConfiguration;
+                std::stack<std::string> tmpPushdownStack = pushdownStack;
+                for (int j = 0; j < tmp.getResultStates()[i].size(); j++)
+                {
+                    tmpPushdownStack.push(std::string(1, tmp.getResultStates()[i][j]));
+                }
+                m_recursionCount++;
+                if (recursiveCheck(input, tmpPushdownStack, additionChainConfiguration))
+                {
+                    chainConfigurations.insert(chainConfigurations.end(), additionChainConfiguration.begin(),
+                        additionChainConfiguration.end());
+                    return true;
+                }
+            }
+        }
+        else if (tmp.getType() == 3)
+        {
+            return (input.size() == 0) ? true : false;
+        }
+
+        chainConfigurations.push_back("('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')");
     }
 
     return false;
 }
 
-const ConfigCommand& PushdownAutomaton::getCommandByPushdownVal(std::string pushdownVal)
+const ConfigCommand PushdownAutomaton::getCommandByPushdownVal(std::string pushdownVal)
 {
     for (const ConfigCommand& command : m_commands)
     {

@@ -3,7 +3,6 @@
 #include <sstream>
 #include <vector>
 
-
 static class StringHelper
 {
 public:
@@ -12,4 +11,3 @@ public:
 private:
     StringHelper() {}
 };
-

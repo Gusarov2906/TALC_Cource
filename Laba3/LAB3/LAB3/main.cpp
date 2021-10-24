@@ -1,10 +1,12 @@
 #include <iostream>
 #include "FileReader.h"
+#include "PushdownAutomaton.h"
 
 int main()
 {
     FileReader fr;
     std::string filename;
+    std::string input;
 
     while (1)
     {
@@ -19,6 +21,19 @@ int main()
         fr.printNonterminalsAlphabet();
         fr.printAlphabet();
         fr.printCommands();
+
+        std::getline(std::cin, input);
+        const std::vector<ConfigCommand> commands = fr.getCommands();
+        PushdownAutomaton pa(input, commands);
+        if (pa.checkStr(input))
+        {
+            std::cout << "Str OK :)" << std::endl;
+        }
+        else
+        {
+            std::cout << "Str not OK :(" << std::endl;
+        }
+        std::cout << std::endl;
     }
     return 0;
 }

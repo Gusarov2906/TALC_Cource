@@ -32,6 +32,11 @@ bool FileReader::getData(std::string filename)
     return validity;
 }
 
+std::vector<ConfigCommand> FileReader::getCommands()
+{
+    return m_configCommands;
+}
+
 void FileReader::printRawRules()
 {
     std::cout << "Raw rules: " << std::endl;

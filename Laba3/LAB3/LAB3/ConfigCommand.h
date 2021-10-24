@@ -5,15 +5,16 @@
 class ConfigCommand
 {
 public:
+    ConfigCommand();
     ConfigCommand(std::string inputVal, std::string pushdownVal, std::vector<std::string> resultStates, std::string managmentUnitVal = "S0");
     ConfigCommand(std::string inputVal, std::string pushdownVal, std::string resultState, std::string managmentUnitVal = "S0");
-    std::string getInputVal();
-    std::string getPushdownVal();
-    std::string getResult();
-    int getType();
-    std::vector<std::string> getResultStates();
-    std::string getManagmentUnitVal();
-    std::string toString();
+    std::string getInputVal() const;
+    std::string getPushdownVal() const;
+    std::string getResult() const;
+    int getType() const;
+    std::vector<std::string> getResultStates() const;
+    std::string getManagmentUnitVal() const;
+    std::string toString() const;
 
 private:
     void setType(std::string inputVal, std::string pushdownVal);

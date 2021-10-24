@@ -8,6 +8,7 @@ class FileReader
 public:
     FileReader();
     bool getData(std::string filename);
+    std::vector<ConfigCommand> getCommands();
     void printRawRules();
     void printCommands();
     void printInputAlphabet();

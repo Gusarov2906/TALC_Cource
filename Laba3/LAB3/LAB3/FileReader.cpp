@@ -12,6 +12,10 @@ FileReader::FileReader()
 bool FileReader::getData(std::string filename)
 {
     std::ifstream file(filename);
+    if (file.fail())
+    {
+        throw std::string("File opening error!");
+    }
     std::string line;
     bool validity = true;
 
@@ -25,6 +29,7 @@ bool FileReader::getData(std::string filename)
         if (!isValid(line))
         {
             validity = false;
+            throw std::string("Input rules is not correct!");
         }
         m_rawRules.push_back(line);
     }

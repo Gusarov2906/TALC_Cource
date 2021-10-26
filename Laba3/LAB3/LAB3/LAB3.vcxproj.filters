@@ -24,9 +24,6 @@
     <ClCompile Include="PushdownAutomaton.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="SymbolTree.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="ConfigCommand.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -39,9 +36,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="PushdownAutomaton.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="SymbolTree.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="ConfigCommand.h">

@@ -17,14 +17,26 @@ bool PushdownAutomaton::checkStr(std::string str)
 
     while (1)
     {
+        if (m_recursionCount > 500)
+        {
+            return false;
+        }
+        //std::cout << "('S0', '" + stackToString(input) + "', '" + stackToString(m_pushdownStack) + "')" << std::endl;
         tmp = getCommandByPushdownVal(m_pushdownStack.top());
         m_pushdownStack.pop();
 
         if (tmp.getType() == 2)
         {
-            if (input.top() == tmp.getInputVal())
+            if (input.size() > 0)
             {
-                input.pop();
+                if (input.top() == tmp.getInputVal())
+                {
+                    input.pop();
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
@@ -49,13 +61,14 @@ bool PushdownAutomaton::checkStr(std::string str)
                     return true;
                 }
             }
+            return false;
         }
         else if(tmp.getType() == 3)
         {
             return (input.size() == 0) ? true : false;
         }
         
-        m_chainConfigurations.push_back("('S0', '" + stackToString(input) + "', '" + stackToString(m_pushdownStack) + "')");
+        m_chainConfigurations.push_back("('S0', '" + stackToString(input) + "', '" + stackToString(m_pushdownStack) + "')") ;
     }
     return false;
 }
@@ -71,11 +84,12 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
 
     while (1)
     {
-        if (m_recursionCount > 5000)
+        if (m_recursionCount > 500)
         {
             return false;
         }
-
+        //std::cout << "('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')" << m_recursionCount << std::endl;
+        chainConfigurations.push_back("('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')");
         tmp = getCommandByPushdownVal(pushdownStack.top());
         if (tmp.getType() == 0)
         {
@@ -86,9 +100,16 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
 
         if (tmp.getType() == 2)
         {
-            if (input.top() == tmp.getInputVal())
+            if (input.size() > 0)
             {
-                input.pop();
+                if (input.top() == tmp.getInputVal())
+                {
+                    input.pop();
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
@@ -112,16 +133,16 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
                         additionChainConfiguration.end());
                     return true;
                 }
+                m_recursionCount--;
             }
+            return false;
         }
         else if (tmp.getType() == 3)
         {
             return (input.size() == 0) ? true : false;
         }
 
-        chainConfigurations.push_back("('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')");
     }
-
     return false;
 }
 

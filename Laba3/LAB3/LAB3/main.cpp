@@ -8,11 +8,25 @@ int main()
     std::string filename;
     std::string input;
 
-    std::cout << "Write filename:" << std::endl;
-    std::getline(std::cin, filename);
-    std::cout << std::endl;
+    bool isFileOk = false;
 
-    fr.getData(filename);
+    while (!isFileOk)
+    {
+        std::cout << "Write filename:" << std::endl;
+        try
+        {
+            std::getline(std::cin, filename);
+            fr.getData(filename);
+            isFileOk = true;
+
+        }
+        catch (std::string err)
+        {
+            std::cout << err << std::endl;
+            std::cout << std::endl;
+        }
+    }
+    std::cout << std::endl;
 
     fr.printRawRules();
     fr.printInputAlphabet();
@@ -22,21 +36,21 @@ int main()
 
     while (1)
     {
-
+        std::cout << "Write str:" << std::endl;
         std::getline(std::cin, input);
         const std::vector<ConfigCommand> commands = fr.getCommands();
         PushdownAutomaton pa(input, commands);
         if (pa.checkStr(input))
         {
             std::cout << "Str OK :)" << std::endl;
+            for (std::string str : pa.getChainConfigurations())
+            {
+                std::cout << str << std::endl;
+            }
         }
         else
         {
             std::cout << "Str not OK :(" << std::endl;
-        }
-        for (std::string str : pa.getChainConfigurations())
-        {
-            std::cout << str << std::endl;
         }
         std::cout << std::endl;
     }

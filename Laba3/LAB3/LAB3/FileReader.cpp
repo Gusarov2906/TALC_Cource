@@ -29,7 +29,7 @@ bool FileReader::getData(std::string filename)
         if (!isValid(line))
         {
             validity = false;
-            throw std::string("Input rules is not correct!");
+            throw std::string("Input rules is not");
         }
         m_rawRules.push_back(line);
     }
@@ -123,7 +123,10 @@ bool FileReader::isValid(std::string str)
     {
         if (matchStr.ready())
         {
-            m_nonTerminals.push_back(matchStr.str(1));
+            if (!(std::find(m_nonTerminals.begin(), m_nonTerminals.end(), matchStr.str(1)) != m_nonTerminals.end()))
+            {
+                m_nonTerminals.push_back(matchStr.str(1));
+            }
             rightPart = matchStr.str(2);
             std::vector<std::string> parts = StringHelper::split(rightPart, '|');
 
@@ -131,13 +134,17 @@ bool FileReader::isValid(std::string str)
                 {
                     std::reverse(str.begin(), str.end());
                 });
+
             m_configCommands.push_back(ConfigCommand(" ", matchStr.str(1), parts));
 
             std::string::const_iterator searchStart(rightPart.cbegin());
             while (std::regex_search(searchStart, rightPart.cend(), matchTerminal, regexTerminals))
             {
-                m_terminals.push_back(matchTerminal.str(1));
-                m_configCommands.push_back(ConfigCommand(matchTerminal.str(1), matchTerminal.str(1), " "));
+                if (!(std::find(m_terminals.begin(), m_terminals.end(), matchTerminal.str(1)) != m_terminals.end())) 
+                {
+                    m_terminals.push_back(matchTerminal.str(1));
+                    m_configCommands.push_back(ConfigCommand(matchTerminal.str(1), matchTerminal.str(1), " "));
+                }
                 searchStart = matchTerminal.suffix().first;
             }
         }

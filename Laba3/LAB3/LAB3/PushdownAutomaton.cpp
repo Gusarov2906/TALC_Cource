@@ -133,7 +133,6 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
                         additionChainConfiguration.end());
                     return true;
                 }
-                m_recursionCount--;
             }
             return false;
         }

@@ -39,21 +39,33 @@ int main()
 
     while (1)
     {
+        void(*ptr(void(*(int))));
         std::cout << "Write str:" << std::endl;
         std::getline(std::cin, input);
         const std::vector<ConfigCommand> commands = fr.getCommands();
-        PushdownAutomaton pa(input, commands);
+        std::vector<std::string> terminals = fr.getTerminals();
+        std::vector<std::string> nonTerminals = fr.getNonTerminals();
+        PushdownAutomaton pa(input, commands, terminals, nonTerminals);
         if (pa.checkStr(input))
         {
-            std::cout << "Str OK :)" << std::endl;
-            for (std::string str : pa.getChainConfigurations())
+            //if (pa.getErrorCount() > 0)
+            //{
+            //    std::cout << "Str not OK :(" << std::endl;
+            //    std::cout << pa.getErrorCount() << std::endl;
+            //}
+            //else
             {
-                std::cout << str << std::endl;
+                std::cout << "Str OK :)" << std::endl;
+                for (std::string str : pa.getChainConfigurations())
+                {
+                    std::cout << str << std::endl;
+                }
             }
         }
         else
         {
             std::cout << "Str not OK :(" << std::endl;
+            std::cout << "Count errors: " << pa.getErrorCount() << std::endl;
         }
         std::cout << std::endl;
     }

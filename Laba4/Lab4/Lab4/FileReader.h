@@ -9,6 +9,8 @@ public:
     FileReader();
     bool getData(std::string filename);
     std::vector<ConfigCommand> getCommands();
+    std::vector<std::string> getTerminals();
+    std::vector<std::string> getNonTerminals();
     void printRawRules();
     void printCommands();
     void printInputAlphabet();

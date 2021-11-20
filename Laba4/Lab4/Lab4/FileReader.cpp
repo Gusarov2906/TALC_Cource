@@ -44,6 +44,16 @@ std::vector<ConfigCommand> FileReader::getCommands()
     return m_configCommands;
 }
 
+std::vector<std::string> FileReader::getTerminals()
+{
+    return m_terminals;
+}
+
+std::vector<std::string> FileReader::getNonTerminals()
+{
+    return m_nonTerminals;
+}
+
 void FileReader::printRawRules()
 {
     std::cout << "Raw rules: " << std::endl;

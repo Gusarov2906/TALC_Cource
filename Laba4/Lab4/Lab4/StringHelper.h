@@ -3,7 +3,7 @@
 #include <sstream>
 #include <vector>
 
-static class StringHelper
+class StringHelper
 {
 public:
     static std::string join(const std::vector<std::string>& vec, const char* delim);
@@ -15,6 +15,4 @@ public:
     static std::vector<std::string> tokenize(std::string s, std::string del = " ");
     static const char qr[3];
     static const char ql[3];
-private:
-    StringHelper() {}
 };

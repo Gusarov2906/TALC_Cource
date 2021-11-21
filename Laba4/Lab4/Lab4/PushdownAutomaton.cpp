@@ -109,7 +109,7 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
                 pushdownStack.pop();
                 if (counter != tmp.getInputVal().size())
                 {
-                    if (!test(tmp, input, pushdownStack))
+                    if (!skip(tmp, input, pushdownStack))
                     {
                         return false;
                     }
@@ -123,7 +123,6 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
         else if (tmp.getType() == 1)
         {
             pushdownStack.pop();
-            bool isAllTerminals = true;
             if (tmp.getResultStates().size() > 0)
             {
                 for (int i = 0; i <static_cast<int>(tmp.getResultStates().size()); i++)
@@ -148,10 +147,6 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
                     }
                     for (std::string str : newPushdownVector)
                     {
-                        if (isNonTerminalSym(str))
-                        {
-                            isAllTerminals = false;
-                        }
                         tmpPushdownStack.push(str);
                     }
 
@@ -167,7 +162,7 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
             }
             if (m_recursionCount == 0)
             {
-                if (!test(tmp, input, pushdownStack))
+                if (!skip(tmp, input, pushdownStack))
                 {
                     return false;
                 }
@@ -187,7 +182,7 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
     return false;
 }
 
-bool PushdownAutomaton::test(ConfigCommand& tmp, std::stack<std::string>& input, std::stack<std::string>& pushdownStack)
+bool PushdownAutomaton::skip(ConfigCommand& tmp, std::stack<std::string>& input, std::stack<std::string>& pushdownStack)
 {
     if (m_recursionCount == 0)
     {
@@ -243,7 +238,6 @@ bool PushdownAutomaton::skipAutomaton(std::stack<std::string>& pushdownStack)
 {
     while (1)
     {
-        std::stack<std::string> res;
         auto tmp = getCommandByPushdownVal(pushdownStack.top());
         //std::cout << tmp.getInputVal() << "  " << tmp.getPushdownVal() << " " << m_recursionCountSkip << std::endl;
         if (m_recursionCountSkip > 200)
@@ -339,47 +333,3 @@ std::string PushdownAutomaton::stackToString(std::stack<std::string> st)
     }
     return res;
 }
-
-//if (isAllTerminals)
-//{
-//    while (input.size() > 0)
-//    {
-//        if (isSyncSym(input.top()))
-//        {
-//            std::cout << "Lexical error " << m_errorsCount << std::endl;
-//            m_errorsCount++;
-//            m_syncInput = input.top();
-//            break;
-//        }
-//        else
-//        {
-//            input.pop();
-//        }
-//    }
-//    while (pushdownStack.size() > 0)
-//    {
-//        if (pushdownStack.top() == m_syncInput) //|| isNonTerminalSym(pushdownStack.top()))
-//        {
-//            break;
-//        }
-//        else
-//        {
-//            pushdownStack.pop();
-//        }
-//    }
-//    if (pushdownStack.size() == 0)
-//    {
-//        if (m_errorsCount == 0)
-//        {
-//            m_errorsCount++;
-//        }
-//        std::cout << "Semantic error " << m_errorsCount << std::endl;
-//        return false;
-//    }
-//}
-//else
-//{
-//    m_errorsCount++;
-//    std::cout << "Syntax error " << m_errorsCount << std::endl;
-//    //return false;
-//}

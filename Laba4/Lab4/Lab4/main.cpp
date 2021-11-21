@@ -48,12 +48,12 @@ int main()
         PushdownAutomaton pa(input, commands, terminals, nonTerminals);
         if (pa.checkStr(input))
         {
-            //if (pa.getErrorCount() > 0)
-            //{
-            //    std::cout << "Str not OK :(" << std::endl;
-            //    std::cout << pa.getErrorCount() << std::endl;
-            //}
-            //else
+            if (pa.getErrorCount() > 0)
+            {
+                std::cout << "Str not OK :(" << std::endl;
+                std::cout << "Count errors: " << pa.getErrorCount() << std::endl;
+            }
+            else
             {
                 std::cout << "Str OK :)" << std::endl;
                 for (std::string str : pa.getChainConfigurations())

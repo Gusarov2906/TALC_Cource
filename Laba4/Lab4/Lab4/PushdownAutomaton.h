@@ -33,7 +33,7 @@ private:
 
     const ConfigCommand getCommandByPushdownVal(std::string pushdownVal);
     bool skipAutomaton(std::stack<std::string>& pushdownStack);
-    bool test(ConfigCommand& tmp, std::stack<std::string>& input, std::stack<std::string>& pushdownStack);
+    bool skip(ConfigCommand& tmp, std::stack<std::string>& input, std::stack<std::string>& pushdownStack);
 
     bool recursiveCheck(std::stack<std::string> input, 
         std::stack<std::string> pushdownStack,

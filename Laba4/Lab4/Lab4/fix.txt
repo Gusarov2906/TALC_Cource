@@ -12,6 +12,8 @@
 <number_end>:‘’|<digit><number_end>
 <for>:‘for’‘ ’‘(’<declaration>‘;’<bool_expression>‘;’‘)’
 <bool_expression>:<identifier>‘ ’<relop>‘ ’<identifier>|<number>‘ ’<relop>‘ ’<identifier>
+<logic_sign>:‘and’|‘or’
+<complex_bool_expression>:<bool_expression>‘ ’<logic_sign>‘ ’<bool_expression>|<bool_expression>
 <relop>:‘<’|‘>’|‘==’|‘!=’
-<if>:‘if’‘ ’‘(’<bool_expression>‘)’
+<if>:‘if’‘ ’‘(’<complex_bool_expression>‘)’
 <return>:‘return’‘ ’<number>‘;’

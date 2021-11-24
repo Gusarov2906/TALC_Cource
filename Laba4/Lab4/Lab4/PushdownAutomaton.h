@@ -27,6 +27,7 @@ private:
     const std::vector<ConfigCommand>& m_commands;
 
     int m_errorsCount = 0;
+    bool exitRecursion;
     std::string m_syncInput = "h0";
     bool isSyncSym(std::string sym);
     bool isNonTerminalSym(std::string sym);

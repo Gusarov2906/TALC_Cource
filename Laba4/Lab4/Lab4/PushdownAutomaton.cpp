@@ -75,7 +75,7 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
         {
             return false;
         }
-        //std::cout << "('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')" << m_recursionCount << std::endl;
+        std::cout << "('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')" << m_recursionCount << std::endl;
         chainConfigurations.push_back("('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')");
         tmp = getCommandByPushdownVal(pushdownStack.top());
         if (tmp.getType() == 0)
@@ -221,6 +221,7 @@ bool PushdownAutomaton::skip(ConfigCommand& tmp, std::stack<std::string>& input,
             m_errorsCount++;
         }
 
+        exitRecursion = false;
         if (skipAutomaton(tmpPushdownStack))
         {
             pushdownStack = tmpPushdownStack;
@@ -239,9 +240,14 @@ bool PushdownAutomaton::skipAutomaton(std::stack<std::string>& pushdownStack)
     while (1)
     {
         auto tmp = getCommandByPushdownVal(pushdownStack.top());
+        if (exitRecursion)
+        {
+            return false;
+        }
         //std::cout << tmp.getInputVal() << "  " << tmp.getPushdownVal() << " " << m_recursionCountSkip << std::endl;
         if (m_recursionCountSkip > 200)
         {
+            exitRecursion = true;
             return false;
         }
         if (tmp.getType() == 0)

@@ -1,0 +1,20 @@
+<block>
+	<column>
+		<row>
+			<block>
+				<row>
+					<column b="1" a="2"> A </column>
+					<column> B </column>
+				</row>
+				<row>
+					<column> C </column>
+					<column> D </column>
+				</row>
+			</block>
+		</row>
+
+		<row> F </row>
+	</column>
+	
+	<column> E	</column>
+</block>

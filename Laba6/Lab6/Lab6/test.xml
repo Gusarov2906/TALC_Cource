@@ -1,20 +1,8 @@
-<block>
-	<column>
-		<row>
-			<block>
-				<row>
-					<column b="1" a="2"> A </column>
-					<column> B </column>
-				</row>
-				<row>
-					<column> C </column>
-					<column> D </column>
-				</row>
-			</block>
-		</row>
-
-		<row> F </row>
-	</column>
-	
-	<column> E	</column>
+<block rows = "2" columns ="1">
+	<row height ="10">
+    <column width="5"></column>
+  </row>
+	<row height ="4">
+    <column width="4">E E EE E</column>
+  </row>
 </block>

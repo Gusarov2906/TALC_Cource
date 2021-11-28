@@ -6,17 +6,17 @@
 class Row : public Element
 {
 public:
-    Row(const VAlignType vAlign, const HAlignType hAlign, const uint8_t textColor, const uint8_t bgColor, const int height) :
-        Element(ElementType::ROW, 0, 0, 0, height),
+    Row(const VAlignType vAlign, const HAlignType hAlign, const uint8_t textColor, const uint8_t bgColor, const int height, const int level) :
+        Element(nullptr, ElementType::ROW, 0, 0, 0, height, level),
         m_vAlign(vAlign), m_hAlign(hAlign), m_textColor(textColor),
         m_bgColor(bgColor), m_parentType(ElementType::NONE) {}
 
-    Row(const Column& parent, const VAlignType vAlign, const HAlignType hAlign,
-        const uint8_t textColor, const uint8_t bgColor, const int height);
-    Row(const Block& parent, const VAlignType vAlign, const HAlignType hAlign,
-        const uint8_t textColor, const uint8_t bgColor, const int height);
+    Row(Column* parent, const int height, const VAlignType vAlign, const HAlignType hAlign,
+        const uint8_t textColor, const uint8_t bgColor, const int level);
+    Row(Block* parent, const int height, const VAlignType vAlign, const HAlignType hAlign,
+        const uint8_t textColor, const uint8_t bgColor, const int level);
 
-    void addElement(const Element& element) override;
+    void addElement(Element* element) override;
     void display();
 
 protected:

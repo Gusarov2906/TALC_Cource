@@ -1,6 +1,6 @@
 #include "Element.h"
 
-void Element::addElement(const Element& element)
+void Element::addElement(Element* element)
 {
     m_childs.push_back(element);
 }
@@ -35,7 +35,22 @@ int Element::getPosY() const
     return m_posY;
 }
 
+int Element::getLevel() const
+{
+    return m_level;
+}
+
+void Element::setLevel(int num)
+{
+    m_level = num;
+}
+
 ElementType Element::getType() const
 {
     return m_type;
+}
+
+Element* Element::getParent()
+{
+    return m_parent;
 }

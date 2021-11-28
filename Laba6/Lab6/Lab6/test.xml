@@ -1,8 +1,12 @@
-<block rows = "2" columns ="1">
-	<row height ="10">
-    <column width="5"></column>
-  </row>
-	<row height ="4">
-    <column width="4">E E EE E</column>
-  </row>
+<block columns ="2" rows = "3">
+  <column width ="55">
+    <row height="6"></row>
+    <row height="7"></row>
+    <row></row>
+  </column>
+  <column>
+    <row height="16"></row>
+    <row height="1"></row>
+    <row height="3"></row>
+  </column>
 </block>

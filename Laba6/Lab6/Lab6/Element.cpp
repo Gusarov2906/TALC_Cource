@@ -54,3 +54,18 @@ Element* Element::getParent()
 {
     return m_parent;
 }
+
+void Element::setChildCount(int num)
+{
+    m_childCount = num;
+}
+
+int Element::getChildCount()
+{
+    return m_childCount;
+}
+
+int Element::getChildsSize()
+{
+    return m_childs.size();
+}

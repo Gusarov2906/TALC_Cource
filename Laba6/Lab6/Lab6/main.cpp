@@ -69,6 +69,7 @@ void addElement(ElementType elementType, QXmlStreamReader& reader, std::stack<QS
     QRegExp re("\\d+");
     bool isNeededWidth = false;
     bool isNeededHeight = false;
+
     if (elementType == ElementType::COLUMN)
     {
         isNeededWidth = true;
@@ -77,6 +78,7 @@ void addElement(ElementType elementType, QXmlStreamReader& reader, std::stack<QS
     {
         isNeededHeight = true;
     }
+
     bool foundWidth = false;
     bool foundHeight = false;
 
@@ -87,18 +89,26 @@ void addElement(ElementType elementType, QXmlStreamReader& reader, std::stack<QS
         {
             if (elementType == ElementType::COLUMN)
             {
-                if (static_cast<Block*>(parent)->getColumnsCount() == (static_cast<Block*>(parent)->getColumnsCounter()+1))
+                if (static_cast<Block*>(parent)->getColumnsCount() == (static_cast<Block*>(parent)->getChildsSize()+1))
                 {
                     isNeededWidth = false;
                     width = parent->getWidth() - parent->getPosX();
                 }
+                else if (static_cast<Block*>(parent)->getColumnsCount() < (static_cast<Block*>(parent)->getChildsSize()+1))
+                {
+                    throw QString("Bad count columns!");
+                }
             }
             else if (elementType == ElementType::ROW)
             {
-                if (static_cast<Block*>(parent)->getRowsCount() == (static_cast<Block*>(parent)->getRowsCounter()+1))
+                if (static_cast<Block*>(parent)->getRowsCount() == (static_cast<Block*>(parent)->getChildsSize()+1))
                 {
                     isNeededHeight = false;
                     height = parent->getHeight() - parent->getPosY();
+                }
+                else if (static_cast<Block*>(parent)->getRowsCount() < (static_cast<Block*>(parent)->getChildsSize()+1))
+                {
+                    throw QString("Bad count rows!");
                 }
             }
         }
@@ -108,18 +118,18 @@ void addElement(ElementType elementType, QXmlStreamReader& reader, std::stack<QS
             {
                 if (elementType == ElementType::COLUMN)
                 {
-                    if (static_cast<Block*>(parent->getParent())->getColumnsCount() == (static_cast<Block*>(parent)->getColumnsCounter()+1))
+                    if (static_cast<Row*>(parent)->getChildCount() == static_cast<Row*>(parent)->getChildsSize()+1)
                     {
                         isNeededWidth = false;
-                        width = parent->getParent()->getWidth() - parent->getParent()->getPosX();
+                        width = parent->getWidth() - parent->getPosX();
                     }
                 }
                 else if (elementType == ElementType::ROW)
                 {
-                    if (static_cast<Block*>(parent->getParent())->getRowsCount() == (static_cast<Block*>(parent)->getRowsCounter()+1))
+                    if (static_cast<Column*>(parent)->getChildCount() == static_cast<Column*>(parent)->getChildsSize()+1)
                     {
                         isNeededHeight = false;
-                        height = parent->getParent()->getHeight() - parent->getParent()->getPosY();
+                        height = parent->getHeight() - parent->getPosY();
                     }
                 }
             }
@@ -215,6 +225,7 @@ void addElement(ElementType elementType, QXmlStreamReader& reader, std::stack<QS
                 throw (QString("No height argument!"));
             }
         }
+
     }
 
     if (width == -1 && elementType == ElementType::COLUMN)
@@ -231,24 +242,31 @@ void addElement(ElementType elementType, QXmlStreamReader& reader, std::stack<QS
     {
         if (elementType == ElementType::COLUMN)
         {
-            curElement = new Column(static_cast<Block*>(parent), width, vAlign, hAlign, textColor, bgColor, parent->getLevel() + 1);
+            curElement = new Column(static_cast<Block*>(parent), width, vAlign,
+                hAlign, textColor, bgColor, parent->getLevel() + 1, 
+                static_cast<Block*>(parent)->getRowsCount());
         }
         else if (elementType == ElementType::ROW)
         {
-            curElement = new Row(static_cast<Block*>(parent), height, vAlign, hAlign, textColor, bgColor, parent->getLevel() + 1);
+            curElement = new Row(static_cast<Block*>(parent), height, vAlign,
+                hAlign, textColor, bgColor, parent->getLevel() + 1,
+                static_cast<Block*>(parent)->getColumnsCount());
         }
     }
     else if (parent != nullptr && parent->getType() == ElementType::ROW && elementType == ElementType::COLUMN)
     {
-        curElement = new Column(static_cast<Row*>(parent), width, vAlign, hAlign, textColor, bgColor, parent->getLevel()+1);
+        curElement = new Column(static_cast<Row*>(parent), width, vAlign,
+            hAlign, textColor, bgColor, parent->getLevel()+1, 0);
     }
     else if (parent != nullptr && parent->getType() == ElementType::COLUMN && elementType == ElementType::ROW)
     {
-        curElement = new Row(static_cast<Column*>(parent), height, vAlign, hAlign, textColor, bgColor, parent->getLevel() + 1);
+        curElement = new Row(static_cast<Column*>(parent), height, vAlign,
+            hAlign, textColor, bgColor, parent->getLevel() + 1, 0);
     }
     if (curElement != nullptr)
     {
         parent->addElement(curElement);
+
         //std::pair<int, Element*> toAdd(curElement->getLevel(), curElement);
         levelParents[curElement->getLevel()] = curElement;
     }
@@ -350,6 +368,14 @@ int main(int argc, char *argv[])
                 }
                 else if (reader.tokenString() == "EndElement")
                 {
+                    //if (levelParents[level]->getType() == ElementType::BLOCK)
+                    //{
+                    //    if (static_cast<Block*>(levelParents[level])->getRowsCounter() != static_cast<Block*>(levelParents[level])->getRowsCount()||
+                    //        (static_cast<Block*>(levelParents[level])->getColumnsCounter() != static_cast<Block*>(levelParents[level])->getColumnsCount()))
+                    //    {
+                    //        throw QString("Hierarchy error!");
+                    //    }
+                    //}
                     nestingStack.pop();
                     level--;
                 }
@@ -359,7 +385,7 @@ int main(int argc, char *argv[])
                 }
                 else if(reader.name() == "")
                 {
-                    qDebug() << reader.text();
+                    //qDebug() << reader.text();
                 }
 
             }
@@ -374,11 +400,6 @@ int main(int argc, char *argv[])
             }
 
 
-
-
-
-
-            qout << reader.name() << reader.text() << "(    " << reader.tokenString() << "      )";
             //qout << reader.name() << reader.text() << "(" << reader.tokenString() << ")";
             //if (reader.attributes().size() > 0)
             //{

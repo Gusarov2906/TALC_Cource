@@ -14,9 +14,9 @@ public:
         m_bgColor(bgColor), m_parentType(ElementType::NONE){}
 
     Column(Row* parent, const int width, const VAlignType vAlign, const HAlignType hAlign,
-        const uint8_t textColor, const uint8_t bgColor, const int level);
+        const uint8_t textColor, const uint8_t bgColor, const int level, const int childCount);
     Column(Block* parent, const int width, const VAlignType vAlign, const HAlignType hAlign,
-        const uint8_t textColor, const uint8_t bgColor, const int level);
+        const uint8_t textColor, const uint8_t bgColor, const int level, const int childCount);
 
     void addElement(Element* element) override;
     void display();

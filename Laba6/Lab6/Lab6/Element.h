@@ -27,12 +27,13 @@ enum class ElementType
 class Element
 {
 public:
-    Element(Element* parent, const ElementType& type, const int& x, const int& y, const int& width, const int& height, const int& level) : m_parent(parent), m_type(type), m_x(x), m_y(y),
+    Element(Element* parent, const ElementType& type, const int& x, const int& y, const int& width, const int& height, const int& level) : 
+                                                                     m_parent(parent), m_type(type), m_x(x), m_y(y),
                                                                      m_width(width), m_height(height),
-                                                                     m_posX(0), m_posY(0), m_level(level){};
+                                                                     m_posX(0), m_posY(0), m_level(level), m_childCount(0){};
     Element(Element* parent, const ElementType& type, const int& level = 0) : m_parent(parent), m_type(type), m_x(0), m_y(0),
                                 m_width(0), m_height(0),
-                                m_posX(0), m_posY(0), m_level(level) {};
+                                m_posX(0), m_posY(0), m_level(level), m_childCount(0){};
 
     virtual void addElement(Element* element);
     int getHeight() const;
@@ -45,6 +46,9 @@ public:
     void setLevel(int num);
     ElementType getType() const;
     Element* getParent();
+    void setChildCount(int num);
+    int getChildCount();
+    int getChildsSize();
 
 protected:
     ElementType m_type;
@@ -59,6 +63,7 @@ protected:
     int m_posX;
     int m_posY;
 
+    int m_childCount;
     std::vector<Element*> m_childs;
     Element* m_parent;
 };

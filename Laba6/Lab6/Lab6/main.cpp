@@ -15,9 +15,8 @@ public:
     Q_DECLARE_TR_FUNCTIONS(XmlStreamLint)
 };
 
-void addNodeRoot(QXmlStreamReader& reader, std::stack<QString>& nestingStack, std::map<int, Element*>& levelParents, Element*& nodeRoot)
+void addNodeRoot(QXmlStreamReader& reader, std::map<int, Element*>& levelParents, Element*& nodeRoot)
 {
-    nestingStack.push(reader.tokenString() + "_" + reader.name());
     if (reader.name() == "block")
     {
         if (reader.attributes().size() > 0)
@@ -39,12 +38,12 @@ void addNodeRoot(QXmlStreamReader& reader, std::stack<QString>& nestingStack, st
                     }
                     else
                     {
-                        throw (QString("No width argument!"));
+                        throw (QString("Bad argument!"));
                     }
                 }
                 else
                 {
-                    throw (QString("No width argument!"));
+                    throw (QString("Bad argument!"));
                 }
             }
             std::pair<int, Element*> toAdd(0, nodeRoot);
@@ -54,11 +53,67 @@ void addNodeRoot(QXmlStreamReader& reader, std::stack<QString>& nestingStack, st
     }
 }
 
-void addElement(ElementType elementType, QXmlStreamReader& reader, std::stack<QString>& nestingStack,
+void addBlock(QXmlStreamReader& reader, std::map<int, Element*>& levelParents, Element* parent)
+{
+    if (parent->getType() != ElementType::BLOCK)
+    {
+        if (reader.name() == "block")
+        {
+            int rowsCount = -1;
+            int columnsCount = -1;
+            if (reader.attributes().size() > 0)
+            {
+                for (QXmlStreamAttribute atribute : reader.attributes())
+                {
+                    QRegExp re("\\d+");
+                    if (re.exactMatch(atribute.value().toString()))
+                    {
+                        //qDebug() << atribute.name();
+                        if (atribute.name() == "rows")
+                        {
+                            rowsCount = atribute.value().toInt();
+                        }
+                        else if (atribute.name() == "columns")
+                        {
+                            columnsCount = atribute.value().toInt();
+                        }
+                        else
+                        {
+                            throw (QString("Bad argument!"));
+                        }
+                    }
+                    else
+                    {
+                        throw (QString("Bad argument!"));
+                    }
+                }
+                if ((rowsCount != -1 && columnsCount != -1) && (rowsCount >= 1 || columnsCount >= 1))
+                {
+                    Block* curElement = new Block(rowsCount, columnsCount, parent);
+                    parent->addElement(curElement);
+                    curElement->setLevel(parent->getLevel() + 1);
+                    levelParents[curElement->getLevel()] = curElement;
+                }
+                else
+                {
+                    throw (QString("Doesn't required arguments existed!"));
+                }
+            }
+            else
+            {
+                throw (QString("Doesn't required arguments existed!"));
+            }
+        }
+    }
+    else
+    {
+        throw (QString("Block nesting error!"));
+    }
+}
+
+void addElement(ElementType elementType, QXmlStreamReader& reader,
     std::map<int, Element*>& levelParents, Element* parent)
 {
-    nestingStack.push(reader.tokenString() + "_" + reader.name());
-
     VAlignType vAlign = VAlignType::top;
     HAlignType hAlign = HAlignType::left;
     uint8_t textColor = 15;
@@ -282,6 +337,8 @@ int main(int argc, char *argv[])
     Element* curElemnt;
     int level = 0;
 
+    QString buf = "";
+
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     // color your text in Windows console mode
@@ -353,39 +410,50 @@ int main(int argc, char *argv[])
                 if (isFirstElem && reader.name() == "block")
                 {
                     level = 0;
-                    addNodeRoot(reader, nestingStack, levelParents, nodeRoot);
+                    nestingStack.push(reader.tokenString() + "_" + reader.name());
+                    addNodeRoot(reader, levelParents, nodeRoot);
                     isFirstElem = false;
                 }
                 else if (reader.name() == "column" && reader.tokenString() == "StartElement")
                 {
-                    addElement(ElementType::COLUMN ,reader, nestingStack, levelParents, levelParents[level]);
+                    nestingStack.push(reader.tokenString() + "_" + reader.name());
+                    addElement(ElementType::COLUMN ,reader, levelParents, levelParents[level]);
                     level++;
                 }
                 else if (reader.name() == "row" && reader.tokenString() == "StartElement")
                 {
-                    addElement(ElementType::ROW, reader, nestingStack, levelParents, levelParents[level]);
+                    nestingStack.push(reader.tokenString() + "_" + reader.name());
+                    addElement(ElementType::ROW, reader, levelParents, levelParents[level]);
+                    level++;
+                }
+                else if (reader.name() == "block" && reader.tokenString() == "StartElement")
+                {
+                    nestingStack.push(reader.tokenString() + "_" + reader.name());
+                    addBlock(reader, levelParents, levelParents[level]);
                     level++;
                 }
                 else if (reader.tokenString() == "EndElement")
                 {
-                    //if (levelParents[level]->getType() == ElementType::BLOCK)
-                    //{
-                    //    if (static_cast<Block*>(levelParents[level])->getRowsCounter() != static_cast<Block*>(levelParents[level])->getRowsCount()||
-                    //        (static_cast<Block*>(levelParents[level])->getColumnsCounter() != static_cast<Block*>(levelParents[level])->getColumnsCount()))
-                    //    {
-                    //        throw QString("Hierarchy error!");
-                    //    }
-                    //}
+                    if (levelParents[level]->getChildsSize() == 0)
+                    {
+                        if (buf != "")
+                        {
+                            //TODO: add atribute to Columns and Rows type!
+                            qDebug() << buf;
+                            buf = "";
+                        }
+                    }
                     nestingStack.pop();
                     level--;
                 }
-                else if (reader.name() == "block")
-                {
-
-                }
                 else if(reader.name() == "")
                 {
-                    //qDebug() << reader.text();
+                    buf = "";
+                    QRegExp re("[^\s\n\t\r]+");
+                    if (re.exactMatch(reader.text().toString()))
+                    {
+                        buf = reader.text().toString();
+                    }
                 }
 
             }

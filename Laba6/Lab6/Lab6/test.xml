@@ -1,12 +1,19 @@
 <block columns ="2" rows = "3">
   <column width ="55">
-    <row height="6"></row>
+    <row height="6">
+      <block columns ="1" rows = "2">
+        <column>
+          <row height="1">Hello world!!!</row>
+          <row></row>
+        </column>
+      </block>
+    </row>
     <row height="7"></row>
     <row></row>
   </column>
   <column>
-    <row height="16"></row>
+    <row height="16"> AAA </row>
     <row height="1"></row>
-    <row height="3"></row>
+    <row height="3"> BBB </row>
   </column>
 </block>

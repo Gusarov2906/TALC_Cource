@@ -8,6 +8,7 @@
 #include "Block.h"
 #include "Column.h"
 #include "Row.h"
+#include "Console.h"
 
 class XmlStreamLint
 {
@@ -329,7 +330,6 @@ void addElement(ElementType elementType, QXmlStreamReader& reader,
 
 int main(int argc, char *argv[])
 {
-    HANDLE  hConsole;
     //int k;
     std::stack<QString> nestingStack;
     std::map<int, Element*> levelParents;
@@ -339,7 +339,6 @@ int main(int argc, char *argv[])
 
     QString buf = "";
 
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     // color your text in Windows console mode
     // colors are 0=black 1=blue 2=green and so on to 15=white  
@@ -348,11 +347,13 @@ int main(int argc, char *argv[])
     // light red on yellow would be 12 + 14*16 = 236
 
 
-    int k = static_cast<int>(ConsoleColors::DARK_BLUE_BACKGROUND) + static_cast<int>(ConsoleColors::LIGHT_CYAN_TEXT);
-    SetConsoleTextAttribute(hConsole, k);
-    std::cout << k
-        << " I want to be nice today!" << std::endl;
-    SetConsoleTextAttribute(hConsole, 15);
+    //int k = static_cast<int>(ConsoleColors::DARK_BLUE_BACKGROUND) + static_cast<int>(ConsoleColors::LIGHT_CYAN_TEXT);
+    //SetConsoleTextAttribute(Console::hConsole, k);
+    //std::cout << k
+    //    << " I want to be nice today!" << std::endl;
+    //SetConsoleTextAttribute(Console::hConsole, 15);
+    //COORD position = { 5,5 };
+    //SetConsoleCursorPosition(Console::hConsole, position);
 
 
     enum ExitCode
@@ -434,13 +435,36 @@ int main(int argc, char *argv[])
                 }
                 else if (reader.tokenString() == "EndElement")
                 {
+                    if (buf != "")
+                    {
+                        if (levelParents[level]->getChildsSize() == 0)
+                        {
+                            if (levelParents[level]->getType() == ElementType::COLUMN)
+                            {
+                                static_cast<Column*>(levelParents[level])->setText(buf);
+                                //qDebug() << static_cast<Column*>(levelParents[level])->getText();
+                            }
+                            else if (levelParents[level]->getType() == ElementType::ROW)
+                            {
+                                static_cast<Row*>(levelParents[level])->setText(buf);
+                                //qDebug() << static_cast<Row*>(levelParents[level])->getText();
+                            }
+                            buf = "";
+                        }
+                        else
+                        {
+                            throw (QString("The position of the text is incorrect!"));
+                        }
+                    }
                     if (levelParents[level]->getChildsSize() == 0)
                     {
-                        if (buf != "")
+                        if (levelParents[level]->getType() == ElementType::COLUMN)
                         {
-                            //TODO: add atribute to Columns and Rows type!
-                            qDebug() << buf;
-                            buf = "";
+                            static_cast<Column*>(levelParents[level])->display();
+                        }
+                        else if (levelParents[level]->getType() == ElementType::ROW)
+                        {
+                            static_cast<Row*>(levelParents[level])->display();
                         }
                     }
                     nestingStack.pop();
@@ -450,6 +474,7 @@ int main(int argc, char *argv[])
                 {
                     buf = "";
                     QRegExp re("[^\s\n\t\r]+");
+                    //qDebug() << "!" << reader.text().toString();
                     if (re.exactMatch(reader.text().toString()))
                     {
                         buf = reader.text().toString();
@@ -475,6 +500,8 @@ int main(int argc, char *argv[])
             //}
         }
     }
+    COORD position = { 0 ,25 };
+    SetConsoleCursorPosition(Console::hConsole, position);
     return Success;
 }
 

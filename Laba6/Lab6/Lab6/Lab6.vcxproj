@@ -87,6 +87,7 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Column.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Row.cpp" />
@@ -97,6 +98,7 @@
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Column.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="ConsoleColors.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="Row.h" />

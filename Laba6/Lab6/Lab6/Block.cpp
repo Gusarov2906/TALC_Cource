@@ -38,7 +38,10 @@ void Block::addElement(Element* element)
             Element::addElement(element);
             m_posY += element->getHeight();
         }
-
+        if (m_height - m_posY < 0)
+        {
+            throw QString("Summary height is too big!");
+        }
         break;
     case ElementType::COLUMN:
         if (m_childs.size() > 0)
@@ -58,6 +61,10 @@ void Block::addElement(Element* element)
             m_childCount = m_columnsCount;
             Element::addElement(element);
             m_posX += element->getWidth();
+        }
+        if (m_width - m_posX < 0)
+        {
+            throw QString("Summary width is too big!");
         }
         break;
     default:

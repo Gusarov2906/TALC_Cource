@@ -1,5 +1,5 @@
 <block columns ="2" rows = "3">
-  <column width ="55">
+  <column width ="1">
     <row height="6">
       <block columns ="1" rows = "2">
         <column>
@@ -11,9 +11,9 @@
     <row height="7"></row>
     <row></row>
   </column>
-  <column>
+  <column width ="78">
     <row height="16"> AAA </row>
     <row height="1"></row>
-    <row height="3"> BBB </row>
+    <row height="4"> BBB </row>
   </column>
 </block>

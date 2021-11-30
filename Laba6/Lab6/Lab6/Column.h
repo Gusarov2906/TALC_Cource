@@ -1,6 +1,7 @@
 #pragma once
 #include "Element.h"
 #include "Block.h"
+#include <qstring.h>
 
 class Row;
 
@@ -20,6 +21,8 @@ public:
 
     void addElement(Element* element) override;
     void display();
+    void setText(QString text);
+    QString getText() const;
 
 protected:
     VAlignType m_vAlign;
@@ -27,5 +30,6 @@ protected:
     uint8_t m_textColor;
     uint8_t m_bgColor;
     ElementType m_parentType;
+    QString m_text;
 };
 

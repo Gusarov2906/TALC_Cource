@@ -34,6 +34,9 @@
     <ClCompile Include="Row.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="test.xml">
@@ -50,10 +53,13 @@
     <ClInclude Include="Column.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ConsoleColors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Row.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConsoleColors.h">
+    <ClInclude Include="Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

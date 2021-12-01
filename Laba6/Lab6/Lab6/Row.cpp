@@ -14,12 +14,12 @@ Row::Row(Column* parent, const int height, const VAlignType vAlign, const HAlign
     m_textColor = textColor;
     m_bgColor = bgColor;
 
-    m_posX = parent->getPosX();
-    m_posY = parent->getPosY();
+    m_posX = 0;
+    m_posY = 0;
 
     m_height = height;
-    m_x = parent->getPosX();
-    m_y = parent->getPosY();
+    m_x = parent->getX() + parent->getPosX();
+    m_y = parent->getY() + parent->getPosY();
     m_width = parent->getWidth();
     m_parentType = parent->getType();
 
@@ -37,12 +37,12 @@ Row::Row(Block* parent, const int height, const VAlignType vAlign, const HAlignT
     m_textColor = textColor;
     m_bgColor = bgColor;
 
-    m_posX = parent->getPosX();
-    m_posY = parent->getPosY();
+    m_posX = 0;
+    m_posY = 0;
 
     m_height = height;
-    m_x = parent->getPosX();
-    m_y = parent->getPosY();
+    m_x = parent->getX() + parent->getPosX();
+    m_y = parent->getY() + parent->getPosY();
     m_width = parent->getWidth();
     m_parentType = parent->getType();
 

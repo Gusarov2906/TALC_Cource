@@ -15,12 +15,12 @@ Column::Column(Row* parent, const int width, const VAlignType vAlign,
     m_textColor = textColor;
     m_bgColor = bgColor;
 
-    m_posX = parent->getPosX();
-    m_posY = parent->getPosY();
+    m_posX = 0;
+    m_posY = 0;
 
     m_width = width;
-    m_x = parent->getPosX();
-    m_y = parent->getPosY();
+    m_x = parent->getX() + parent->getPosX();
+    m_y = parent->getY() + parent->getPosY();
     m_height = parent->getHeight();
     m_parentType = parent->getType();
 
@@ -38,12 +38,12 @@ Column::Column(Block* parent, const int width, const VAlignType vAlign,
     m_textColor = textColor;
     m_bgColor = bgColor;
 
-    m_posX = parent->getPosX();
-    m_posY = parent->getPosY();
+    m_posX = 0;
+    m_posY = 0;
 
     m_width = width;
-    m_x = parent->getPosX();
-    m_y = parent->getPosY();
+    m_x = parent->getX() + parent->getPosX();
+    m_y = parent->getY() + parent->getPosY();
     m_height = parent->getHeight();
     m_parentType = parent->getType();
 
@@ -65,7 +65,7 @@ void Column::addElement(Element* element)
         }
         if (m_height - m_posY < 0)
         {
-            throw QString("Summary width is too big!");
+            throw QString("Summary height is too big!");
         }
         break;
     case ElementType::BLOCK:
@@ -73,7 +73,7 @@ void Column::addElement(Element* element)
         m_posY += element->getHeight();
         if (m_height - m_posY < 0)
         {
-            throw QString("Summary width is too big!");
+            throw QString("Summary height is too big!");
         }
         break;
     default:

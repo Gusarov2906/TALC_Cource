@@ -6,13 +6,15 @@ Block::Block(const int rowsCount, const int columnsCount, Element* parent) : Ele
 {
     m_columnsCount = columnsCount;
     m_rowsCount = rowsCount;
-    m_x = parent->getX();
-    m_y = parent->getY();
-    m_width = parent->getWidth();
-    m_height = parent->getHeight();
 
     m_posX = 0;
     m_posY = 0;
+
+    m_x = parent->getX() + parent->getPosX();
+    m_y = parent->getY() + parent->getPosY();
+
+    m_width = parent->getWidth();
+    m_height = parent->getHeight();
 }
 
 void Block::addElement(Element* element)

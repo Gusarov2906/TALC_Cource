@@ -1,19 +1,22 @@
-<block columns ="2" rows = "3">
-  <column width ="22">
-    <row height="6">
-      <block columns ="1" rows = "2">
-        <column>
-          <row height="1" textcolor ="0" bgcolor="7">Hello world!!!</row>
-          <row textcolor ="15" bgcolor="8" valign ="bottom">XXX</row>
-        </column>
+<block columns ="1" rows="2">
+  <column>
+    <row height ="4">FFF</row>
+    <row>
+      <block rows ="1" columns ="3">
+        <row>
+          <column width ="8">
+            <block rows ="5" columns ="1">
+              <row height="3">AAA</row>
+              <row height="3">BBB</row>
+              <row height="3">CCC</row>
+              <row height="3">DDD</row>
+              <row></row>
+            </block>
+          </column>
+          <column width ="12"></column>
+          <column></column>
+        </row>
       </block>
     </row>
-    <row height="7" textcolor ="11" bgcolor="13"></row>
-    <row height="8" bgcolor="15" textcolor="0" halign ="center" valign ="center">This is lab 6 :)</row>
-  </column>
-  <column width ="58">
-    <row height="16" textcolor="15" bgcolor="4" halign ="center" valign ="center">AAA </row>
-    <row height="1" textcolor="15" bgcolor="9" halign ="right" valign ="top">CCC</row>
-    <row height="4" textcolor="0" bgcolor="14" halign ="left" valign ="bottom">BBB </row>
   </column>
 </block>

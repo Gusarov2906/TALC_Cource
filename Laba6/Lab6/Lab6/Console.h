@@ -4,5 +4,6 @@ class Console
 {
 public:
     static HANDLE  hConsole;
+    static void setFont();
 };
 

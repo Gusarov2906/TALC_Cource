@@ -339,6 +339,7 @@ int main(int argc, char *argv[])
 
     QString buf = "";
 
+    Console::setFont();
 
     // color your text in Windows console mode
     // colors are 0=black 1=blue 2=green and so on to 15=white  
@@ -397,6 +398,8 @@ int main(int argc, char *argv[])
 
         if (reader.error())
         {
+            int color = static_cast<int>(ConsoleColors::LIGHT_WHITE_TEXT) + static_cast<int>(ConsoleColors::BLACK) * 16;
+            SetConsoleTextAttribute(Console::hConsole, color);
             errorStream << XmlStreamLint::tr(
                 "Error: %1 in file %2 at line %3, column %4.\n").arg(
                     reader.errorString(), inputFilePath,
@@ -473,7 +476,7 @@ int main(int argc, char *argv[])
                 else if(reader.name() == "")
                 {
                     buf = "";
-                    QRegExp re("[^\s\n\t\r]+");
+                    QRegExp re("[^\n\t\r]+");
                     //qDebug() << "!" << reader.text().toString();
                     if (re.exactMatch(reader.text().toString()))
                     {
@@ -484,6 +487,8 @@ int main(int argc, char *argv[])
             }
             catch (QString& error)
             {
+                int color = static_cast<int>(ConsoleColors::LIGHT_WHITE_TEXT) + static_cast<int>(ConsoleColors::BLACK) * 16;
+                SetConsoleTextAttribute(Console::hConsole, color);
                 errorStream << XmlStreamLint::tr(
                     "Error: %1 in file %2 at line %3, column %4.\n").arg(
                         error, inputFilePath,
@@ -502,6 +507,8 @@ int main(int argc, char *argv[])
     }
     COORD position = { 0 ,25 };
     SetConsoleCursorPosition(Console::hConsole, position);
+    int color = static_cast<int>(ConsoleColors::LIGHT_WHITE_TEXT) + static_cast<int>(ConsoleColors::BLACK) * 16;
+    SetConsoleTextAttribute(Console::hConsole, color);
     return Success;
 }
 

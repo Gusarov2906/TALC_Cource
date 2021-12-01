@@ -66,14 +66,6 @@ void Row::addElement(Element* element)
         {
             throw QString("Summary width is too big!");
         }
-        //if (element->getParent()->getParent()->getType() == ElementType::BLOCK)
-        //{
-        //    static_cast<Block*>(element->getParent()->getParent())->setColumnsCounter(static_cast<Block*>(element->getParent()->getParent())->getColumnsCounter() + 1);
-        //}
-        //else
-        //{
-        //    throw QString("Hierarchy error!");
-        //}
         break;
     case ElementType::BLOCK:
         Element::addElement(element);
@@ -96,16 +88,57 @@ void Row::display()
     {
         COORD position = { m_x,m_y };
         SetConsoleCursorPosition(Console::hConsole, position);
+        int color = static_cast<int>(m_textColor) + static_cast<int>(m_bgColor) * 16;
+        SetConsoleTextAttribute(Console::hConsole, color);
         for (int i = 0; i < m_height; i++)
         {
             QString res = "";
             for (int j = 0; j < m_width; j++)
             {
-                res += "_";
+                res += " ";
             }
             COORD position = { m_x,m_y + i };
             SetConsoleCursorPosition(Console::hConsole, position);
             std::cout << res.toStdString();
+        }
+        if (m_text != "")
+        {
+            int x = 0;
+            int y = 0;
+            if (m_width < m_text.length())
+            {
+                throw QString("Text lenght bigger than width element!");
+            }
+
+            if (m_hAlign == HAlignType::left)
+            {
+                x = 0;
+            }
+            else if (m_hAlign == HAlignType::center)
+            {
+                x = (m_width - m_text.length()) / 2;
+            }
+            else if (m_hAlign == HAlignType::right)
+            {
+                x = m_width - m_text.length();
+            }
+
+            if (m_vAlign == VAlignType::bottom)
+            {
+                y = m_height - 1;
+            }
+            else if (m_vAlign == VAlignType::center)
+            {
+                y = m_height / 2;
+            }
+            else if (m_vAlign == VAlignType::top)
+            {
+                y = 0;
+            }
+
+            COORD position = { m_x + x, m_y + y };
+            SetConsoleCursorPosition(Console::hConsole, position);
+            std::cout << m_text.toStdString();
         }
     }
 }

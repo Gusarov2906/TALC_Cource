@@ -241,10 +241,18 @@ void addElement(ElementType elementType, QXmlStreamReader& reader,
                 if (atribute.name() == "textcolor")
                 {
                     textColor = atribute.value().toInt();
+                    if (bgColor > 15 || bgColor < 0)
+                    {
+                        throw (QString("Bad text color number!"));
+                    }
                 }
                 else if (atribute.name() == "bgcolor")
                 {
                     bgColor = atribute.value().toInt();
+                    if (bgColor > 15 || bgColor < 0)
+                    {
+                        throw (QString("Bad background color number!"));
+                    }
                 }
                 else if (elementType == ElementType::COLUMN && atribute.name() == "width")
                 {
@@ -398,6 +406,8 @@ int main(int argc, char *argv[])
 
         if (reader.error())
         {
+            COORD position = { 0 ,25 };
+            SetConsoleCursorPosition(Console::hConsole, position);
             int color = static_cast<int>(ConsoleColors::LIGHT_WHITE_TEXT) + static_cast<int>(ConsoleColors::BLACK) * 16;
             SetConsoleTextAttribute(Console::hConsole, color);
             errorStream << XmlStreamLint::tr(
@@ -487,6 +497,8 @@ int main(int argc, char *argv[])
             }
             catch (QString& error)
             {
+                COORD position = { 0 ,25 };
+                SetConsoleCursorPosition(Console::hConsole, position);
                 int color = static_cast<int>(ConsoleColors::LIGHT_WHITE_TEXT) + static_cast<int>(ConsoleColors::BLACK) * 16;
                 SetConsoleTextAttribute(Console::hConsole, color);
                 errorStream << XmlStreamLint::tr(
@@ -511,36 +523,3 @@ int main(int argc, char *argv[])
     SetConsoleTextAttribute(Console::hConsole, color);
     return Success;
 }
-
-//for (k = 1; k < 255; k++)
-//{
-//    // pick the colorattribute k you want
-//    SetConsoleTextAttribute(hConsole, k);
-//    std::cout << k << " I want to be nice today!" << std::endl;
-//}
-
-//system("Color 1A");
-//printf("\n");
-//printf("\x1B[31mTexting\033[0m\t\t");
-//printf("\x1B[32mTexting\033[0m\t\t");
-//printf("\x1B[33mTexting\033[0m\t\t");
-//printf("\x1B[34mTexting\033[0m\t\t");
-//printf("\x1B[35mTexting\033[0m\n");
-
-//printf("\x1B[36mTexting\033[0m\t\t");
-//printf("\x1B[36mTexting\033[0m\t\t");
-//printf("\x1B[36mTexting\033[0m\t\t");
-//printf("\x1B[37mTexting\033[0m\t\t");
-//printf("\x1B[93mTexting\033[0m\n");
-
-//printf("\033[3;42;30mTexting\033[0m\t\t");
-//printf("\033[3;43;30mTexting\033[0m\t\t");
-//printf("\033[3;44;30mTexting\033[0m\t\t");
-//printf("\033[3;104;30mTexting\033[0m\t\t");
-//printf("\033[3;100;30mTexting\033[0m\n");
-
-//printf("\033[3;47;35mTexting\t\t");
-//printf("\033[2;47;35mTexting\033[0m\t\t");
-//printf("\033[1;47;35mTexting\033[0m\t\t");
-//printf("\t\t");
-//printf("\n");

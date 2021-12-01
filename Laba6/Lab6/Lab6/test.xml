@@ -1,20 +1,52 @@
 <block columns ="1" rows="2">
   <column>
-    <row height ="4">FFF</row>
+    <row height ="5" valign="center" halign="center" bgcolor="15" textcolor="0">TALC LAB 6 by @gusarov2906</row>
     <row>
       <block rows ="1" columns ="3">
         <row>
-          <column width ="8">
-            <block rows ="5" columns ="1">
-              <row height="3">AAA</row>
-              <row height="3">BBB</row>
-              <row height="3">CCC</row>
-              <row height="3">DDD</row>
-              <row></row>
+          <column width="6">
+            <block columns="1" rows="19">
+              <column>
+                <row height="1"> 1</row>
+                <row height="1" bgcolor="15" textcolor="0" halign="center"> 2</row>
+                <row height="1" halign="right"> 3</row>
+                <row height="1" bgcolor="15" textcolor="0"> 4</row>
+                <row height="1" halign="center"> 5</row>
+                <row height="1" bgcolor="15" textcolor="0" halign="right"> 6</row>
+                <row height="1"> 7</row>
+                <row height="1" bgcolor="15" textcolor="0" halign="center"> 8</row>
+                <row height="1" halign="right"> 9</row>
+                <row height="1">10</row>
+                <row height="1" bgcolor="15" textcolor="0" halign="center">11</row>
+                <row height="1" halign="right">12</row>
+                <row height="1">13</row>
+                <row height="1" bgcolor="15" textcolor="0" halign="center">14</row>
+                <row height="1" halign="right">15</row>
+                <row height="1">16</row>
+                <row height="1" bgcolor="15" textcolor="0" halign="center">17</row>
+                <row height="1" halign="right">18</row>
+                <row height="1">19</row>
+              </column>
             </block>
           </column>
-          <column width ="12"></column>
-          <column></column>
+          <column width ="50">
+            <block rows ="5" columns ="1">
+              <row height="3" valign="center" halign="center" textcolor="0" bgcolor="12">Black -> Light Red</row>
+              <row height="3" valign="center" halign="center" bgcolor="2" textcolor="15">White -> Dark Green</row>
+              <row height="3" valign="center" halign="center" textcolor="5" bgcolor="14">Dark Magenta -> Light Yellow</row>
+              <row height="3" valign="center" halign="center" bgcolor="1" textcolor="10">Light Green -> Dark Blue</row>
+              <row bgcolor="6"></row>
+            </block>
+          </column>
+          <column>
+            <block columns="1" rows="3">
+              <column>
+                <row height="8" halign="right" valign="bottom" bgcolor="11">Hello world1!</row>
+                <row height="8" halign="right" valign="center" bgcolor="10">Hello world2!!</row>
+                <row halign="right" valign="top" bgcolor="12">Hello world3!!!</row>
+              </column>
+            </block>
+          </column>
         </row>
       </block>
     </row>

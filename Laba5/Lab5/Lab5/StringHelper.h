@@ -13,6 +13,8 @@ public:
         const std::string& toReplace,
         const std::string& replaceWith);
     static std::vector<std::string> tokenize(std::string s, std::string del = " ");
+    static void replaceAll(std::string& str, const std::string& from, const std::string& to);
+    static bool is_digits(const std::string& str);
     static const char qr[3];
     static const char ql[3];
 };

@@ -27,6 +27,15 @@
     <ClInclude Include="ConfigCommand.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="CommandHelper.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpreter.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab1Dll\ConsoleManagerExport.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigCommand.cpp">
@@ -42,6 +51,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="StringHelper.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpreter.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

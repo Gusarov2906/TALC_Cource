@@ -2,10 +2,12 @@
 #include "FileReader.h"
 #include "PushdownAutomaton.h"
 #include <Windows.h>
+#include "Interpreter.h"
 
 int main()
 {
     FileReader fr;
+    Interpreter interpreter;
     std::string filename;
     std::string input;
  //   setlocale(LC_ALL, "Russian");
@@ -66,6 +68,7 @@ int main()
                     std::cout << "[" << str << "] ";
                 }
                 std::cout << std::endl;
+                interpreter.interpret(pa.getTerminalsInOrder());
             }
         }
         else

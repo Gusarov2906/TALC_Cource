@@ -121,7 +121,7 @@ void FileReader::printCommandsChain()
 bool FileReader::isValid(std::string str)
 {
     const std::regex regexStr(R"((<[A-Za-z_]*>):(.*))");
-    const std::regex regexTerminals(R"(([‘][A-Za-z_(){}0-9<>=!;"+-//*? ]+[’])(.|$))");
+    const std::regex regexTerminals(R"(([‘][^‘’|]+[’])(.|$))");
 
     std::smatch matchStr;
     std::smatch matchTerminal;

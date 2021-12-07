@@ -5,9 +5,10 @@
 class PushdownAutomaton
 {
 public:
-    PushdownAutomaton(const std::string& inputStr, 
-        const std::vector<ConfigCommand>& commands, const std::vector<std::string> terminals,
-        const std::vector<std::string> nonTerminals)
+    PushdownAutomaton(const std::string& inputStr
+        , const std::vector<ConfigCommand>& commands
+        , const std::vector<std::string> terminals
+        , const std::vector<std::string> nonTerminals)
         : m_inputStr(inputStr), m_commands(commands)
         , m_recursionCount(0), m_terminals(terminals)
         , m_nonTerminals(nonTerminals)

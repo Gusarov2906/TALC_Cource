@@ -116,10 +116,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>P:\PROJECTS\MIET\TALC\Laba5\Lab5\Lab1Dll;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>P:\PROJECTS\MIET\TALC\Laba5\Lab5\Lab1Dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LAB1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,14 +142,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Lab1Dll\ConsoleManagerExport.h" />
+    <ClInclude Include="CommandHelper.h" />
     <ClInclude Include="ConfigCommand.h" />
     <ClInclude Include="FileReader.h" />
+    <ClInclude Include="Interpreter.h" />
     <ClInclude Include="PushdownAutomaton.h" />
     <ClInclude Include="StringHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigCommand.cpp" />
     <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="Interpreter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PushdownAutomaton.cpp" />
     <ClCompile Include="StringHelper.cpp" />

@@ -74,7 +74,7 @@ bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack
     std::vector<std::string>& chainConfigurations, std::vector<std::string>& terminalsInOrder)
 {
     ConfigCommand tmp;
-    const std::regex regexTerminals(R"(([‘][A-Za-z_(){}0-9<>=!;"+-//*? ]+[’])(.|$))");
+    const std::regex regexTerminals(R"(([‘][^‘’|]+[’])(.|$))");
     std::vector<std::string> syncSyms = { "(", ")", "{", "}", ";"};
 
     std::smatch matchTerminal;
@@ -246,6 +246,7 @@ bool PushdownAutomaton::skip(ConfigCommand& tmp, std::stack<std::string>& input,
             return false;
         }
     }
+    return false;
 }
 
 bool PushdownAutomaton::skipAutomaton(std::stack<std::string>& pushdownStack)

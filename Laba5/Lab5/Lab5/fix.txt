@@ -1,0 +1,23 @@
+<character>:‘a’|‘b’|‘c’|‘d’|‘e’|‘f’|‘g’|‘h’|‘i’|‘j’|‘k’|‘l’|‘m’|‘n’|‘o’|‘p’|‘q’|‘r’|‘s’|‘t’|‘u’|‘v’|‘w’|‘x’|‘y’|‘z’|‘A’|‘B’|‘C’|‘D’|‘E’|‘F’|‘G’|‘H’|‘I’|‘J’|‘K’|‘L’|‘M’|‘N’|‘O’|‘P’|‘Q’|‘R’|‘S’|‘T’|‘U’|‘V’|‘W’|‘X’|‘Y’|‘Z’|‘_’|‘ ’|‘!’|‘?’
+<id_end>:‘’|<character><id_end>
+<identifier>:<character><id_end>
+<digit>:‘0’|‘1’|‘2’|‘3’|‘4’|‘5’|‘6’|‘7’|‘8’|‘9’
+<number_end>:‘’|<digit><number_end>
+<number>:<digit><number_end>
+<expression>:<term>|<term><space_end>‘+’<space_end><expression>|<term><space_end>‘-’<space_end><expression>
+<term>:<factor>|<factor><space_end>‘*’<space_end><term>|<factor><space_end>‘/’<space_end><term>
+<factor>:‘(’<expression>‘)’|<number>|<identifier>
+<relop>:‘<’|‘>’|‘==’|‘!=’
+<bool_expression>:<expression><space_end><relop><space_end><expression>
+<assign>:<identifier><space_end>‘=’<space_end><expression><space_end>‘;’
+<string>:‘"’<id_end>‘"’
+<print>:‘print’<space><print_end><space_end>‘;’
+<print_end>:<string>|<expression>|<string>‘,’<print_end>|<expression>‘,’<print_end>
+<scan>:‘scan’<space><identifier><space_end>‘;’
+<for>:‘for’<space><identifier><space_end>‘=’<space_end><expression><space>‘to’<space><expression>
+<if>:‘if’<space_end><bool_expression>
+<else>:‘’|‘else’<space_end>‘{’<space_end><statement><space_end>‘}’
+<statement>:‘’|<print><space_end><statement>|<scan><space_end><statement>|<assign><space_end><statement>|<for><space_end>‘{’<space_end><statement><space_end>‘}’<space_end><statement>|<if><space_end>‘{’<space_end><statement><space_end>‘}’<space_end><else><space_end><statement>
+<program>:<statement>
+<space>:‘ ’
+<space_end>:‘’|<space><space_end>

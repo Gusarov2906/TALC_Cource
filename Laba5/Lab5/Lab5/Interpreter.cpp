@@ -4,6 +4,22 @@
 #include "ConsoleManagerExport.h"
 #include <iostream>
 
+bool Interpreter::getNumericParam(int& param)
+{
+    std::cin >> param;
+    if (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(1024, '\n');
+        std::cout << "Invalid input " << std::endl;
+        return false;
+    }
+    std::cin.clear();
+    std::cin.ignore(1024, '\n');
+    return true;
+
+}
+
 void Interpreter::interpret(std::vector<std::string> strTokens)
 {
     m_strTokens = strTokens;
@@ -24,9 +40,11 @@ void Interpreter::interpret(std::vector<std::string> strTokens)
             break;
         case CommandType::Print:
             std::cout << "Print" << std::endl;
+            toStop = doPrint();
             break;
         case CommandType::Scan:
             std::cout << "Scan" << std::endl;
+            toStop = doScan();
             break;
         case CommandType::None:
             std::cout << "Assign" << std::endl;
@@ -59,12 +77,99 @@ bool Interpreter::nextToken()
     }
     return false;
 }
+bool Interpreter::doScan()
+{
+    std::string name;
+    std::string strVal;
+    if (!nextToken())
+    {
+        return true;
+    }
+    while (m_strTokens[m_index] != ";")
+    {
+        if (m_strTokens[m_index] == " ")
+        {
+            if (!nextToken())
+            {
+                return true;
+            }
+        }
+
+        name += m_strTokens[m_index];
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+    int val;
+    while(!getNumericParam(val));
+    addToVariables(name, val);
+    if (!nextToken())
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Interpreter::doPrint()
+{
+    int value;
+    std::string name;
+    std::string strVal;
+    bool valueCollecting = false;
+    bool isExpression = true;
+    if (!nextToken())
+    {
+        return true;
+    }
+    while (m_strTokens[m_index] != ";")
+    {
+        if (m_strTokens[m_index] == " ")
+        {
+            if (!nextToken())
+            {
+                return true;
+            }
+        }
+        if (m_strTokens[m_index] == "\"")
+        {
+            isExpression = false;
+            if (!nextToken())
+            {
+                return true;
+            }
+            while (m_strTokens[m_index] != "\"")
+            {
+                strVal += m_strTokens[m_index];
+                if (!nextToken())
+                {
+                    return true;
+                }
+            }
+            break;
+        }
+        //value
+        strVal += m_strTokens[m_index];
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+    if (isExpression)
+    {
+        int res = solveExpression(strVal);
+        std::cout << res;
+    }
+    else
+    {
+        std::cout << strVal;
+    }
+}
 
 bool Interpreter::doAssign()
 {
     std::string name;
     std::string strVal;
-    bool toStop = false;
     bool valueCollecting = false;
     while (m_strTokens[m_index] != ";")
     {
@@ -72,8 +177,7 @@ bool Interpreter::doAssign()
         {
             if (!nextToken())
             {
-                toStop = true;
-                break;
+                return true;
             }
         }
 
@@ -93,33 +197,16 @@ bool Interpreter::doAssign()
         }
         if (!nextToken())
         {
-            toStop = true;
-            break;
+            return true;
         }
     }
 
     int res = solveExpression(strVal);
 
-    std::pair<std::string, int> variable(name, res);
-
-    bool contains = false;
-    for (int i = 0; i < m_variables.size(); i++)
-    {
-        if (m_variables[i].first == name)
-        {
-            m_variables[i].second = res;
-            contains = true;
-        }
-    }
-    if (!contains)
-    {
-        m_variables.push_back(variable);
-    }
-
-    std::cout << variable.first << " " << variable.second << std::endl;
+    addToVariables(name, res);
     if (!nextToken())
-        toStop = true;
-    return toStop;
+        return true;
+    return false;
 }
 
 int Interpreter::solveExpression(std::string str)
@@ -160,4 +247,23 @@ int Interpreter::trySwitchNameToValue(std::string& str, std::string& buf)
         }
     }
     buf = "";
+}
+
+void Interpreter::addToVariables(std::string name, int res)
+{
+    std::pair<std::string, int> variable(name, res);
+    bool contains = false;
+    for (int i = 0; i < m_variables.size(); i++)
+    {
+        if (m_variables[i].first == name)
+        {
+            m_variables[i].second = res;
+            contains = true;
+        }
+    }
+    if (!contains)
+    {
+        m_variables.push_back(variable);
+    }
+    std::cout << variable.first << " " << variable.second << std::endl;
 }

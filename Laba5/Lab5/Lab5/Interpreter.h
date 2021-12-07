@@ -14,6 +14,10 @@ private:
     int getValueByName(std::string name);
     bool nextToken();
     bool doAssign();
+    bool doScan();
+    bool doPrint();
     int solveExpression(std::string str);
     int trySwitchNameToValue(std::string& str, std::string& buf);
+    bool getNumericParam(int& param);
+    void addToVariables(std::string name, int res);
 };

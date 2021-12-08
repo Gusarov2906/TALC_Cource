@@ -33,11 +33,11 @@ int main()
     }
     std::cout << std::endl;
 
-    fr.printRawRules();
-    fr.printInputAlphabet();
-    fr.printNonterminalsAlphabet();
-    fr.printAlphabet();
-    fr.printCommands();
+    //fr.printRawRules();
+    //fr.printInputAlphabet();
+    //fr.printNonterminalsAlphabet();
+    //fr.printAlphabet();
+    //fr.printCommands();
 
     while (1)
     {
@@ -62,12 +62,12 @@ int main()
                 //{
                 //    std::cout << str << std::endl;
                 //}
-                std::cout << "Tokens:" << std::endl;
-                for (std::string str : pa.getTerminalsInOrder())
-                {
-                    std::cout << "[" << str << "] ";
-                }
-                std::cout << std::endl;
+                //std::cout << "Tokens:" << std::endl;
+                //for (std::string str : pa.getTerminalsInOrder())
+                //{
+                //    std::cout << "[" << str << "] ";
+                //}
+                //std::cout << std::endl;
                 interpreter.interpret(pa.getTerminalsInOrder());
             }
         }

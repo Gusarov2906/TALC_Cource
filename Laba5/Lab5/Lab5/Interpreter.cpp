@@ -30,24 +30,21 @@ void Interpreter::interpret(std::vector<std::string> strTokens)
         switch (CommandHelper::getCommandType(strTokens[m_index]))
         {
         case CommandType::For:
-            std::cout << "For" << std::endl;
+            toStop = doFor();
             break;
         case CommandType::If:
-            std::cout << "If" << std::endl;
-            break;
-        case CommandType::Else:
-            std::cout << "Else" << std::endl;
+            toStop = doIf();
             break;
         case CommandType::Print:
-            std::cout << "Print" << std::endl;
             toStop = doPrint();
             break;
+        case CommandType::Else:
+            toStop = skip();
+            break;
         case CommandType::Scan:
-            std::cout << "Scan" << std::endl;
             toStop = doScan();
             break;
         case CommandType::None:
-            std::cout << "Assign" << std::endl;
             toStop = doAssign();
             break;
 
@@ -77,6 +74,291 @@ bool Interpreter::nextToken()
     }
     return false;
 }
+
+bool Interpreter::doFor()
+{
+    if (!nextToken())
+    {
+        return true;
+    }
+    std::string name;
+    std::string strValFrom;
+    std::string strValTo;
+
+    while (m_strTokens[m_index] != "=")
+    {
+        if (m_strTokens[m_index] != " ")
+        {
+            name += m_strTokens[m_index];
+        }
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+    if (!nextToken())
+    {
+        return true;
+    }
+
+    while (m_strTokens[m_index] != "to")
+    {
+        if (m_strTokens[m_index] != " ")
+        {
+            strValFrom += m_strTokens[m_index];
+        }
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+    if (!nextToken())
+    {
+        return true;
+    }
+    addToVariables(name, solveExpression(strValFrom));
+
+    //int from = solveExpression(strValFrom);
+
+    while (m_strTokens[m_index] != "{")
+    {
+        if (m_strTokens[m_index] != " ")
+        {
+            strValTo += m_strTokens[m_index];
+        }
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+    if (!nextToken())
+    {
+        return true;
+    }
+
+    std::vector<std::string> tokens;
+    while (m_strTokens[m_index] != "}")
+    {
+        if (m_strTokens[m_index] != " ")
+        {
+            tokens.push_back(m_strTokens[m_index]);
+        }
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+
+    for (int i = solveExpression(strValFrom); i < solveExpression(strValTo); i++)
+    {
+        //std::cout << i;
+        addToVariables(name, i);
+        Interpreter interpreter(m_variables);
+        interpreter.interpret(tokens);
+    }
+    if (!nextToken())
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Interpreter::doIf()
+{
+    if (!nextToken())
+    {
+        return true;
+    }
+    std::string leftPart;
+    std::string sign;
+
+    while (m_strTokens[m_index] != "==" && m_strTokens[m_index] != "!=" &&
+           m_strTokens[m_index] != ">" && m_strTokens[m_index] != "<")
+    {
+        if (m_strTokens[m_index] != " ")
+        {
+            leftPart += m_strTokens[m_index];
+        }
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+
+    sign = m_strTokens[m_index];
+    if (!nextToken())
+    {
+        return true;
+    }
+
+    std::string rightPart;
+
+    while (m_strTokens[m_index] != "{")
+    {
+        if (m_strTokens[m_index] != " ")
+        {
+            rightPart += m_strTokens[m_index];
+        }
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+    if (!nextToken())
+    {
+        return true;
+    }
+
+    std::vector<std::string> tokens;
+    while (m_strTokens[m_index] != "}")
+    {
+        if (m_strTokens[m_index] != " ")
+        {
+            tokens.push_back(m_strTokens[m_index]);
+        }
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+
+    while (m_strTokens[m_index] != "else")
+    {
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+
+
+    if (sign == "==")
+    {
+        if (solveExpression(leftPart) == solveExpression(rightPart))
+        {
+            Interpreter interpreter(m_variables);
+            interpreter.interpret(tokens);
+        }
+        else
+        {
+            if (m_strTokens[m_index] == "else")
+            {
+                return doElse();
+            }
+        }
+    }
+    else if (sign == "!=")
+    {
+        if (solveExpression(leftPart) != solveExpression(rightPart))
+        {
+            Interpreter interpreter(m_variables);
+            interpreter.interpret(tokens);
+        }
+        else
+        {
+            if (m_strTokens[m_index] == "else")
+            {
+                return doElse();
+            }
+        }
+    }
+    else if (sign == ">")
+    {
+        if (solveExpression(leftPart) > solveExpression(rightPart))
+        {
+            Interpreter interpreter(m_variables);
+            interpreter.interpret(tokens);
+        }
+        else
+        {
+            if (m_strTokens[m_index] == "else")
+            {
+                return doElse();
+            }
+        }
+    }
+    else if (sign == "<")
+    {
+        if (solveExpression(leftPart) < solveExpression(rightPart))
+        {
+            Interpreter interpreter(m_variables);
+            interpreter.interpret(tokens);
+        }
+        else
+        {
+            if (!nextToken())
+            {
+                return true;
+            }
+            if (m_strTokens[m_index] == "else")
+            {
+                return doElse();
+            }
+        }
+    }
+
+    if (!nextToken())
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Interpreter::doElse()
+{
+    if (!nextToken())
+    {
+        return true;
+    }
+    while (m_strTokens[m_index] != "{")
+    {
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+    if (!nextToken())
+    {
+        return true;
+    }
+
+    std::vector<std::string> tokens;
+    while (m_strTokens[m_index] != "}")
+    {
+        if (m_strTokens[m_index] != " ")
+        {
+            tokens.push_back(m_strTokens[m_index]);
+        }
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+
+    Interpreter interpreter(m_variables);
+    interpreter.interpret(tokens);
+    if (!nextToken())
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Interpreter::skip()
+{
+    while (m_strTokens[m_index] != "}")
+    {
+        if (!nextToken())
+        {
+            return true;
+        }
+    }
+    if (!nextToken())
+    {
+        return true;
+    }
+}
+
 bool Interpreter::doScan()
 {
     std::string name;
@@ -158,12 +440,13 @@ bool Interpreter::doPrint()
     if (isExpression)
     {
         int res = solveExpression(strVal);
-        std::cout << res;
+        std::cout << res << std::endl;
     }
     else
     {
-        std::cout << strVal;
+        std::cout << strVal << std::endl;
     }
+    return false;
 }
 
 bool Interpreter::doAssign()
@@ -171,6 +454,15 @@ bool Interpreter::doAssign()
     std::string name;
     std::string strVal;
     bool valueCollecting = false;
+    if (m_strTokens[m_index] == " ")
+    {
+        if (!nextToken())
+        {
+            return true;
+        }
+        return false;
+    }
+    //std::cout << "Assign" << std::endl;
     while (m_strTokens[m_index] != ";")
     {
         if (m_strTokens[m_index] == " ")
@@ -265,5 +557,5 @@ void Interpreter::addToVariables(std::string name, int res)
     {
         m_variables.push_back(variable);
     }
-    std::cout << variable.first << " " << variable.second << std::endl;
+    //std::cout << variable.first << " " << variable.second << std::endl;
 }

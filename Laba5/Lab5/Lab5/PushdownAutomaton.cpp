@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <regex>
 
+const std::regex regexTerminals(R"(([‘][^‘’|]+[’])(.|$))");
+
 bool PushdownAutomaton::checkStr(std::string str)
 {
     m_pushdownStack.push("h0");
@@ -73,20 +75,18 @@ bool PushdownAutomaton::isNonTerminalSym(std::string sym)
 bool PushdownAutomaton::recursiveCheck(std::stack<std::string> input, std::stack<std::string> pushdownStack,
     std::vector<std::string>& chainConfigurations, std::vector<std::string>& terminalsInOrder)
 {
-    ConfigCommand tmp;
-    const std::regex regexTerminals(R"(([‘][^‘’|]+[’])(.|$))");
     std::vector<std::string> syncSyms = { "(", ")", "{", "}", ";"};
 
     std::smatch matchTerminal;
     while (1)
     {
-        if (m_recursionCount > 200)
+        if (m_recursionCount > 400)
         {
             return false;
         }
         //std::cout << "('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')" << m_recursionCount << std::endl;
         chainConfigurations.push_back("('S0', '" + stackToString(input) + "', '" + stackToString(pushdownStack) + "')");
-        tmp = getCommandByPushdownVal(pushdownStack.top());
+        ConfigCommand tmp = getCommandByPushdownVal(pushdownStack.top());
         if (tmp.getType() == 0)
         {
             return false;
@@ -259,7 +259,7 @@ bool PushdownAutomaton::skipAutomaton(std::stack<std::string>& pushdownStack)
             return false;
         }
         //std::cout << tmp.getInputVal() << "  " << tmp.getPushdownVal() << " " << m_recursionCountSkip << std::endl;
-        if (m_recursionCountSkip > 200)
+        if (m_recursionCountSkip > 400)
         {
             m_exitRecursion = true;
             return false;

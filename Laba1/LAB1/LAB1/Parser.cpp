@@ -390,12 +390,6 @@ std::string Parser::checkLexemes(LexemeString& lexemes)
         std::cout << "Parenthesis error!" << std::endl;;
     }
 
-    if (countNums < 2 || countOperations < 1)
-    {
-        code += '5';
-        std::cout << "Need at least two numbers and one operator! " << std::endl;;
-    }
-
     return code;
 }
 

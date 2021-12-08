@@ -1,4 +1,11 @@
 #pragma once
+#define CALCAPI_EXPORT
+
+#if defined(CALCAPI_EXPORT) // внутри DLL
+#   define CALCAPI   __declspec(dllexport)
+#else // вне DLL
+#   define CALCAPI   __declspec(dllimport)
+#endif 
 
 #include <iostream>
 #include "Parser.h"
@@ -6,7 +13,7 @@
 #include "Solver.h"
 #include <iomanip>
 
-class ConsoleManager
+class CALCAPI ConsoleManager
 {
 public:
 	ConsoleManager();

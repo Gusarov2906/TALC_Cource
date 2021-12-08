@@ -50,6 +50,7 @@ void ConsoleManager::run()
 		}
 		else
 		{
+			//std::cout << "EXECUTE" << std::endl;
 			execute(str);
 		}
 	}
@@ -62,24 +63,26 @@ double ConsoleManager::execute(std::string str)
 	{
 		if (exOut)
 		{
-			std::cout << std::endl << "After parse:" << std::endl;
-			std::cout << lexemesAfterParse.toString() << std::endl;
+			//std::cout << std::endl << "After parse:" << std::endl;
+			//std::cout << lexemesAfterParse.toString() << std::endl;
 		}
 		LexemeString lexemesAfterConvert = converter.convert(lexemesAfterParse);
 		if (exOut)
 		{
-			std::cout << "After convert:" << std::endl;
-			std::cout << lexemesAfterConvert.toString() << std::endl;
+			//std::cout << "After convert:" << std::endl;
+			//std::cout << lexemesAfterConvert.toString() << std::endl;
 		}
 		try
 		{
 			double ans = solver.solve(lexemesAfterConvert);
-			std::cout << "ANSWER: " << ans << std::endl << std::endl;
+			//std::cout << "ANSWER: " << std::endl;
+			//std::cout << ans << std::endl;
 			return ans;
 		}
 		catch (const char* msg)
 		{
-			std::cout << "ERROR: " << msg << std::endl << std::endl;
+			//std::cout << "ERROR: " << std::endl;
+			//std::cout <<  msg << std::endl;
 			return NULL;
 		}
 	}
